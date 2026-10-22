@@ -87,7 +87,7 @@ export function PlayerScreen({ game }: { game: Game }) {
           onNameChange={(value) => setEditedName(value.toUpperCase().slice(0, 10))}
           onSave={save}
           onRestart={restart}
-          onBackToVault={() => leaveTo("/")}
+          onBackToVault={() => leaveTo("/biblioteca")}
         />
       )}
     </div>
