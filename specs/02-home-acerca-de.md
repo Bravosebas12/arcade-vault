@@ -124,7 +124,7 @@ shared/
 - [x] En `/acerca`, enviar con algún campo vacío o solo con espacios no muestra la terminal y el formulario tiembla.
 - [x] Enviar con nombre "px_kai", un correo y un mensaje muestra "> MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS, PX_KAI.".
 - [x] "ENVIAR OTRO MENSAJE" vuelve a mostrar el formulario con los tres campos vacíos.
-- [x] Enviar el formulario no escribe nada en `localStorage` ni hace peticiones de red.
+- [x] Enviar el formulario no escribe nada en `localStorage` ni hace peticiones de red. _(Superado por SPEC 03: el formulario ahora envía el mensaje con una Server Action.)_
 
 ---
 
