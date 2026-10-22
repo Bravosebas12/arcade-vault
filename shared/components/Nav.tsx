@@ -7,7 +7,7 @@ import { useSession } from "@/features/session/SessionProvider";
 import { MobileMenu } from "@/shared/components/MobileMenu";
 
 // Biblioteca stays active on the game detail and player routes, as in the prototype.
-const isLibrary = (path: string) => path === "/" || path.startsWith("/juegos");
+const isLibrary = (path: string) => path === "/biblioteca" || path.startsWith("/juegos");
 
 export function Nav() {
   const pathname = usePathname();
@@ -16,8 +16,10 @@ export function Nav() {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
 
+  const home = pathname === "/";
   const library = isLibrary(pathname);
   const hall = pathname === "/salon";
+  const about = pathname === "/acerca";
 
   return (
     <>
@@ -27,8 +29,10 @@ export function Nav() {
           <div className="logo-text neon-cyan">ARCADE <span className="neon-magenta">VAULT</span></div>
         </Link>
         <div className="links">
-          <Link href="/" className={library ? "active" : ""}>Biblioteca</Link>
+          <Link href="/" className={home ? "active" : ""}>Inicio</Link>
+          <Link href="/biblioteca" className={library ? "active" : ""}>Biblioteca</Link>
           <Link href="/salon" className={hall ? "active" : ""}>Salón de la Fama</Link>
+          <Link href="/acerca" className={about ? "active" : ""}>Acerca de</Link>
         </div>
         <div className="spacer"></div>
         <div className="coin-counter">
@@ -47,8 +51,10 @@ export function Nav() {
         open={open}
         onClose={close}
         links={[
-          { href: "/", label: "Biblioteca", active: library },
+          { href: "/", label: "Inicio", active: home },
+          { href: "/biblioteca", label: "Biblioteca", active: library },
           { href: "/salon", label: "Salón de la Fama", active: hall },
+          { href: "/acerca", label: "Acerca de", active: about },
           { href: "/acceso", label: user ? "Cuenta" : "Iniciar Sesión", active: pathname === "/acceso" },
         ]}
       />

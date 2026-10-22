@@ -38,7 +38,7 @@ export function HallOfFameScreen() {
       <HallTable rows={rows} gameTitle={game.title} you={you} />
 
       <div style={{ textAlign: "center", marginTop: 32 }}>
-        <Link className="btn lg" href="/">VOLVER A LA BIBLIOTECA</Link>
+        <Link className="btn lg" href="/biblioteca">VOLVER A LA BIBLIOTECA</Link>
       </div>
     </div>
   );
