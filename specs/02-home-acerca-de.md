@@ -1,6 +1,6 @@
 # SPEC 02 — Home y Acerca de
 
-> **Estado:** Borrador
+> **Estado:** Implementado
 > **Depende de:** SPEC 01
 > **Fecha:** 2026-10-21
 > **Objetivo:** Añadir las pantallas Home (nueva portada en `/`) y Acerca de (con formulario de contacto simulado) del prototipo `references/home-about/`, moviendo la Biblioteca a `/biblioteca`.
@@ -109,22 +109,22 @@ shared/
 
 ## Criterios de aceptación
 
-- [ ] `npm run lint`, `npx tsc --noEmit`, `npm test` y `npm run build` terminan sin errores.
-- [ ] `npm run build` prerenderiza `/`, `/biblioteca` y `/acerca`, además de las rutas de SPEC 01.
-- [ ] Home y Acerca de, vistas lado a lado con `references/home-about/arcade-vault-standalone.html`, muestran los mismos textos, colores, fuentes y disposición a 1440 px y a 390 px de ancho (con animaciones desactivadas y todos los `.reveal` visibles).
-- [ ] La Biblioteca en `/biblioteca` es idéntica a la que antes se servía en `/`.
-- [ ] El bloque CSS añadido en `app/globals.css` coincide carácter a carácter con las líneas 930–1147 y 1150–1725 de `references/home-about/styles.css`.
-- [ ] La consola del navegador no muestra errores ni avisos de hidratación en `/` ni en `/acerca`.
-- [ ] Al cargar `/`, las secciones con `.reveal` bajo el hero están ocultas y aparecen al hacer scroll hasta ellas.
-- [ ] El enlace activo es Inicio en `/`, Biblioteca en `/biblioteca` y `/juegos/*`, Salón de la Fama en `/salon` y Acerca de en `/acerca`, tanto en la barra como en el menú móvil.
-- [ ] El logo lleva a `/`.
-- [ ] En Home, "EXPLORAR JUEGOS", "VER TODOS LOS JUEGOS →" e "INSERTAR MONEDA →" llevan a `/biblioteca`; "CREAR CUENTA" y "EMPEZAR GRATIS →" llevan a `/acceso`; "VER SALÓN →" lleva a `/salon`.
-- [ ] Pulsar la mini tarjeta de CAÍDA lleva a `/juegos/caida`.
-- [ ] "VOLVER AL VAULT" (Detalle y modal del Reproductor), "VOLVER A LA BIBLIOTECA" (Salón), iniciar sesión y "JUGAR COMO INVITADO" llevan a `/biblioteca`.
-- [ ] En `/acerca`, enviar con algún campo vacío o solo con espacios no muestra la terminal y el formulario tiembla.
-- [ ] Enviar con nombre "px_kai", un correo y un mensaje muestra "> MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS, PX_KAI.".
-- [ ] "ENVIAR OTRO MENSAJE" vuelve a mostrar el formulario con los tres campos vacíos.
-- [ ] Enviar el formulario no escribe nada en `localStorage` ni hace peticiones de red.
+- [x] `npm run lint`, `npx tsc --noEmit`, `npm test` y `npm run build` terminan sin errores.
+- [x] `npm run build` prerenderiza `/`, `/biblioteca` y `/acerca`, además de las rutas de SPEC 01.
+- [x] Home y Acerca de, vistas lado a lado con `references/home-about/arcade-vault-standalone.html`, muestran los mismos textos, colores, fuentes y disposición a 1440 px y a 390 px de ancho (con animaciones desactivadas y todos los `.reveal` visibles).
+- [x] La Biblioteca en `/biblioteca` es idéntica a la que antes se servía en `/`.
+- [x] El bloque CSS añadido en `app/globals.css` coincide carácter a carácter con las líneas 930–1147 y 1150–1725 de `references/home-about/styles.css`.
+- [x] La consola del navegador no muestra errores ni avisos de hidratación en `/` ni en `/acerca`.
+- [x] Al cargar `/`, las secciones con `.reveal` bajo el hero están ocultas y aparecen al hacer scroll hasta ellas.
+- [x] El enlace activo es Inicio en `/`, Biblioteca en `/biblioteca` y `/juegos/*`, Salón de la Fama en `/salon` y Acerca de en `/acerca`, tanto en la barra como en el menú móvil.
+- [x] El logo lleva a `/`.
+- [x] En Home, "EXPLORAR JUEGOS", "VER TODOS LOS JUEGOS →" e "INSERTAR MONEDA →" llevan a `/biblioteca`; "CREAR CUENTA" y "EMPEZAR GRATIS →" llevan a `/acceso`; "VER SALÓN →" lleva a `/salon`.
+- [x] Pulsar la mini tarjeta de CAÍDA lleva a `/juegos/caida`.
+- [x] "VOLVER AL VAULT" (Detalle y modal del Reproductor), "VOLVER A LA BIBLIOTECA" (Salón), iniciar sesión y "JUGAR COMO INVITADO" llevan a `/biblioteca`.
+- [x] En `/acerca`, enviar con algún campo vacío o solo con espacios no muestra la terminal y el formulario tiembla.
+- [x] Enviar con nombre "px_kai", un correo y un mensaje muestra "> MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS, PX_KAI.".
+- [x] "ENVIAR OTRO MENSAJE" vuelve a mostrar el formulario con los tres campos vacíos.
+- [x] Enviar el formulario no escribe nada en `localStorage` ni hace peticiones de red.
 
 ---
 
@@ -147,15 +147,24 @@ shared/
 
 ## Riesgos
 
-| Riesgo | Mitigación |
-| ------ | ---------- |
-| Cache Components conserva el estado de `/acerca` al navegar: al volver se vería la terminal de éxito en lugar del formulario vacío, a diferencia del prototipo. | Reiniciar el formulario cuando la pantalla se oculta (limpieza de un efecto) y comprobarlo navegando a otra ruta y volviendo. |
-| `.reveal` empieza con `opacity: 0`: si el observador no se ejecuta, las secciones quedan invisibles. | `useReveal` corre tras montar en un componente cliente; verificar sin errores de consola y con scroll real en Playwright. |
-| Las capturas de paridad salen con secciones ocultas o a medio animar. | En las capturas, desactivar animaciones y forzar `.reveal.in` en ambas páginas antes de capturar. |
-| El bloque CSS nuevo redefine selectores existentes y altera pantallas de SPEC 01. | Se comprobó que `globals.css` no tiene `.kicker`, `.stat-block`, `.reveal` ni los `@keyframes` `float`, `bounce` y `shake`, y que el bloque nuevo no redefine `.field`, `.card` ni `.btn` a nivel raíz (solo añade `.btn.press`). Tras el paso 1, comparar las pantallas de SPEC 01 con sus capturas. |
-| Enlaces a la Biblioteca olvidados en `/`. | El paso 2 lista los cinco usos actuales (`AuthScreen` ×2, `GameDetailScreen`, `HallOfFameScreen`, `PlayerScreen`); buscar `"/"` en `features/` y `shared/` antes de cerrar. |
+| Riesgo                                                                                                                                                               | Mitigación                                                                                                                                                                                                                                                                                                                      |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cache Components conserva el estado de `/acerca` al navegar: al volver se vería la terminal de éxito en lugar del formulario vacío, a diferencia del prototipo. | Reiniciar el formulario cuando la pantalla se oculta (limpieza de un efecto) y comprobarlo navegando a otra ruta y volviendo.                                                                                                                                                                                                    |
+| `.reveal` empieza con `opacity: 0`: si el observador no se ejecuta, las secciones quedan invisibles.                                                             | `useReveal` corre tras montar en un componente cliente; verificar sin errores de consola y con scroll real en Playwright.                                                                                                                                                                                                      |
+| Las capturas de paridad salen con secciones ocultas o a medio animar.                                                                                                | En las capturas, desactivar animaciones y forzar `.reveal.in` en ambas páginas antes de capturar.                                                                                                                                                                                                                             |
+| El bloque CSS nuevo redefine selectores existentes y altera pantallas de SPEC 01.                                                                                    | Se comprobó que `globals.css` no tiene `.kicker`, `.stat-block`, `.reveal` ni los `@keyframes` `float`, `bounce` y `shake`, y que el bloque nuevo no redefine `.field`, `.card` ni `.btn` a nivel raíz (solo añade `.btn.press`). Tras el paso 1, comparar las pantallas de SPEC 01 con sus capturas. |
+| Enlaces a la Biblioteca olvidados en `/`.                                                                                                                          | El paso 2 lista los cinco usos actuales (`AuthScreen` ×2, `GameDetailScreen`, `HallOfFameScreen`, `PlayerScreen`); buscar `"/"` en `features/` y `shared/` antes de cerrar.                                                                                                                                       |
 
 ---
+
+## Notas de implementación
+
+Verificado el 2026-10-21 con el MCP de Playwright contra `references/home-about/arcade-vault-standalone.html` (capturas en `.playwright-screenshots/`, no versionadas).
+
+- **Fuentes del bundle:** `arcade-vault-standalone.html` incrusta versiones de Press Start 2P y JetBrains Mono distintas de `app/fonts/`. La paridad se midió sustituyendo en el prototipo las fuentes de la app.
+- **Paridad visual:** Home 8 px (1440) y 3 px (390), Acerca de 4 px y 3 px, menú móvil 0 px; ninguna diferencia supera 16 por canal.
+- **Botones convertidos en `<Link>`:** un `<a>` no centra el texto como un `<button>`. Los seis enlaces con clase `btn` o `lb-link` de Home llevan `textAlign: "center"` en línea, porque a 390 px "EMPEZAR GRATIS →" y "VER SALÓN →" ocupan dos líneas.
+- **Reinicio del formulario:** `ContactForm` vacía el formulario en la limpieza de un efecto; al volver a `/acerca` por navegación de cliente aparece vacío.
 
 ## Lo que **no** entra en este spec
 
