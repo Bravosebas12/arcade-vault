@@ -1,6 +1,6 @@
 # SPEC 01 — MVP visual de Arcade Vault
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** —
 > **Fecha:** 2026-10-21
 > **Objetivo:** Reproducir en Next.js las cinco pantallas del prototipo `references/templates/` con su comportamiento simulado, sin implementar ningún juego.
@@ -147,24 +147,24 @@ shared/
 
 ## Criterios de aceptación
 
-- [ ] `npm run lint`, `npx tsc --noEmit`, `npm test` y `npm run build` terminan sin errores.
-- [ ] `npm run build` prerenderiza `/`, `/acceso`, `/salon` y las ocho rutas `/juegos/[id]` y `/juegos/[id]/jugar`.
-- [ ] Cada pantalla, vista lado a lado con `references/templates/Arcade Vault.html`, muestra los mismos textos, colores, fuentes y disposición a 1440 px y a 390 px de ancho.
-- [ ] La consola del navegador no muestra errores ni avisos de hidratación en ninguna ruta.
-- [ ] En `/`, escribir "caí" muestra solo CAÍDA; elegir PUZZLE muestra solo los juegos de esa categoría; una búsqueda sin coincidencias muestra "NO HAY RESULTADOS".
-- [ ] Pasar el ratón sobre una tarjeta la inclina siguiendo al cursor y al salir vuelve a su posición.
-- [ ] El enlace activo de la barra de navegación es Biblioteca en `/` y en `/juegos/*`, y Salón de la Fama en `/salon`.
-- [ ] A menos de 840 px de ancho se ocultan los enlaces, aparece el botón ≡ y el panel lateral se abre y se cierra (también al pulsar el fondo).
-- [ ] `/juegos/no-existe` devuelve la página 404.
-- [ ] La tabla de `/juegos/caida` muestra los mismos 10 nombres, puntos y fechas que el Detalle de CAÍDA en el prototipo.
-- [ ] En el Reproductor la puntuación sube sola; PAUSA la detiene y muestra "EN PAUSA"; REANUDAR la reanuda.
-- [ ] FIN abre el modal; GUARDAR PUNTUACIÓN añade `{ game, score, name, at }` a `localStorage["av_scores"]` y muestra "▸ PUNTUACIÓN GUARDADA_".
-- [ ] JUGAR DE NUEVO reinicia la puntuación a 0, las vidas a 3 y el nivel a 01.
-- [ ] Iniciar sesión como "kai" guarda `{"name":"KAI"}` en `av_user`, lleva a `/` y la barra de navegación muestra "KAI ▾".
-- [ ] Pulsar "KAI ▾" cierra la sesión, borra `av_user` y vuelve a mostrar "Iniciar Sesión".
-- [ ] Al recargar con `av_user` presente, la sesión sigue activa.
-- [ ] En `/salon`, cambiar de pestaña actualiza el podio y la tabla; con sesión iniciada aparece la fila "▸ TU MEJOR MARCA EN <JUEGO>".
-- [ ] Con `av_user` o `av_scores` corruptos en `localStorage` la app carga sin errores y se comporta como si no hubiera datos.
+- [x] `npm run lint`, `npx tsc --noEmit`, `npm test` y `npm run build` terminan sin errores.
+- [x] `npm run build` prerenderiza `/`, `/acceso`, `/salon` y las ocho rutas `/juegos/[id]` y `/juegos/[id]/jugar`.
+- [x] Cada pantalla, vista lado a lado con `references/templates/Arcade Vault.html`, muestra los mismos textos, colores, fuentes y disposición a 1440 px y a 390 px de ancho.
+- [x] La consola del navegador no muestra errores ni avisos de hidratación en ninguna ruta.
+- [x] En `/`, escribir "caí" muestra solo CAÍDA; elegir PUZZLE muestra solo los juegos de esa categoría; una búsqueda sin coincidencias muestra "NO HAY RESULTADOS".
+- [x] Pasar el ratón sobre una tarjeta la inclina siguiendo al cursor y al salir vuelve a su posición.
+- [x] El enlace activo de la barra de navegación es Biblioteca en `/` y en `/juegos/*`, y Salón de la Fama en `/salon`.
+- [x] A menos de 840 px de ancho se ocultan los enlaces, aparece el botón ≡ y el panel lateral se abre y se cierra (también al pulsar el fondo).
+- [x] `/juegos/no-existe` devuelve la página 404.
+- [x] La tabla de `/juegos/caida` muestra los mismos 10 nombres, puntos y fechas que el Detalle de CAÍDA en el prototipo.
+- [x] En el Reproductor la puntuación sube sola; PAUSA la detiene y muestra "EN PAUSA"; REANUDAR la reanuda.
+- [x] FIN abre el modal; GUARDAR PUNTUACIÓN añade `{ game, score, name, at }` a `localStorage["av_scores"]` y muestra "▸ PUNTUACIÓN GUARDADA_".
+- [x] JUGAR DE NUEVO reinicia la puntuación a 0, las vidas a 3 y el nivel a 01.
+- [x] Iniciar sesión como "kai" guarda `{"name":"KAI"}` en `av_user`, lleva a `/` y la barra de navegación muestra "KAI ▾".
+- [x] Pulsar "KAI ▾" cierra la sesión, borra `av_user` y vuelve a mostrar "Iniciar Sesión".
+- [x] Al recargar con `av_user` presente, la sesión sigue activa.
+- [x] En `/salon`, cambiar de pestaña actualiza el podio y la tabla; con sesión iniciada aparece la fila "▸ TU MEJOR MARCA EN <JUEGO>".
+- [x] Con `av_user` o `av_scores` corruptos en `localStorage` la app carga sin errores y se comporta como si no hubiera datos.
 
 ---
 
@@ -197,6 +197,17 @@ shared/
 | El efecto de inclinación modifica `style.transform` directamente y choca con la transición de `.card:hover`. | Reproducir el mismo enfoque del prototipo (`ref` + `onMouseMove`), que ya convive con esa transición. |
 
 ---
+
+## Notas de implementación
+
+Verificado el 2026-10-21 con el MCP de Playwright contra `references/templates/Arcade Vault.html` (capturas en `.playwright-screenshots/`, no versionadas).
+
+- **Paridad visual:** 0 px de diferencia en las cinco pantallas, en la sesión iniciada del Salón y en el menú móvil abierto, a 1440 px y a 390 px.
+- **404:** `/juegos/no-existe` muestra la página 404 de Next.js con `noindex`, pero responde con estado HTTP 200. Con Cache Components la respuesta empieza a transmitirse antes de `notFound()`, y `dynamicParams` no está disponible. Un 404 real exige validar el `id` en un Proxy; queda para otro spec.
+- **Dependencias:** `@types/node` sube de `^20` a `^24`, porque Vitest 5 no acepta la versión 20 y el entorno usa Node 24.
+- **Vitest:** `passWithNoTests` está activo para que `npm test` pase en el paso 1, antes de que existan tests.
+- **Fuentes:** se sirven los archivos woff2 exactos que Google Fonts entrega al prototipo, mediante `next/font/local`. Con `next/font/google` aparecía un desfase de medio píxel y un respaldo basado en Arial que deformaba ▲ ★ ▸.
+- **Estado entre rutas:** Cache Components conserva el estado de una ruta al navegar. El Reproductor se reinicia antes de navegar con SALIR y VOLVER AL VAULT.
 
 ## Lo que **no** entra en este spec
 
