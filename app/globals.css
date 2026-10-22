@@ -22,9 +22,12 @@
   --bronze: #d97a3a;
   --line: rgba(0, 245, 255, 0.18);
   --line-2: rgba(255, 255, 255, 0.06);
-  /* Same families as the prototype, self-hosted via next/font in app/layout.tsx */
-  --pixel: var(--font-press-start), system-ui, monospace;
-  --mono: var(--font-jetbrains-mono), var(--font-courier-prime), "Courier New", monospace;
+  /* Exact prototype font stacks. The faces are self-hosted by next/font in app/layout.tsx
+     (Turbopack keeps the family names). The next/font CSS variables are not used because
+     they append an Arial-based "Fallback" face that renders glyphs missing from these fonts
+     (▲ ★ ▸ ...) differently from the prototype. */
+  --pixel: "Press Start 2P", system-ui, monospace;
+  --mono: "JetBrains Mono", "Courier Prime", "Courier New", monospace;
 }
 
 /* Expose tokens as Tailwind utilities: bg-bg-2, text-ink-dim, border-line, text-cyan, font-pixel, ... */

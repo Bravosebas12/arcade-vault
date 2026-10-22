@@ -1,23 +1,38 @@
 import type { Metadata } from "next";
-import { Courier_Prime, JetBrains_Mono, Press_Start_2P } from "next/font/google";
+import localFont from "next/font/local";
+import { SessionProvider } from "@/features/session/SessionProvider";
+import { Footer } from "@/shared/components/Footer";
+import { Nav } from "@/shared/components/Nav";
 import "./globals.css";
 
-const pressStart = Press_Start_2P({
-  variable: "--font-press-start",
+// Exact woff2 files (latin subset) that Google Fonts serves to Chrome for the prototype's
+// stylesheet link, self-hosted so text renders pixel-identical to references/templates.
+// font-family keeps the real family names because globals.css (--pixel, --mono) names them literally.
+const pressStart = localFont({
+  src: "./fonts/press-start-2p-400-latin.woff2",
   weight: "400",
-  subsets: ["latin"],
+  variable: "--font-press-start",
+  adjustFontFallback: false,
+  declarations: [{ prop: "font-family", value: "'Press Start 2P'" }],
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const jetbrainsMono = localFont({
+  // Variable font: one file covers weights 400–700.
+  src: "./fonts/jetbrains-mono-latin.woff2",
+  weight: "400 700",
   variable: "--font-jetbrains-mono",
-  weight: ["400", "500", "700"],
-  subsets: ["latin"],
+  adjustFontFallback: false,
+  declarations: [{ prop: "font-family", value: "'JetBrains Mono'" }],
 });
 
-const courierPrime = Courier_Prime({
+const courierPrime = localFont({
+  src: [
+    { path: "./fonts/courier-prime-400-latin.woff2", weight: "400" },
+    { path: "./fonts/courier-prime-700-latin.woff2", weight: "700" },
+  ],
   variable: "--font-courier-prime",
-  weight: ["400", "700"],
-  subsets: ["latin"],
+  adjustFontFallback: false,
+  declarations: [{ prop: "font-family", value: "'Courier Prime'" }],
 });
 
 export const metadata: Metadata = {
@@ -34,7 +49,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <div className="av-bg" aria-hidden="true" />
         <div className="av-noise" aria-hidden="true" />
-        <div className="av-app">{children}</div>
+        <SessionProvider>
+          <div className="av-app">
+            <Nav />
+            <main className="av-main">{children}</main>
+            <Footer />
+          </div>
+        </SessionProvider>
       </body>
     </html>
   );
