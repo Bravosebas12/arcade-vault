@@ -91,4 +91,3 @@ The Playwright MCP server is registered for this project (local scope). Compare 
 
 - `.atl/` holds the gentle-ai skill registry (tooling metadata, not app code).
 - `logs/` contains local MCP server logs and is not part of the app.
-- An empty nested `arcade-vault/` directory exists at the root; it appears to be a scaffolding leftover.
