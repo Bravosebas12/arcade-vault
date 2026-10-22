@@ -42,3 +42,10 @@ next-env.d.ts
 
 # local tool logs
 /logs/
+
+# Playwright MCP: transient page snapshots and console logs
+/.playwright-mcp/
+
+# Playwright screenshots (kept locally, organized by screen/feature; see CLAUDE.md)
+.playwright-screenshots/*
+!.playwright-screenshots/.gitkeep
