@@ -4,7 +4,7 @@ type Props = {
   onReset: () => void;
 };
 
-/** Fake terminal shown after sending; nothing is actually sent. */
+/** Terminal shown once the message has been sent to the team. */
 export function TerminalSuccess({ name, onReset }: Props) {
   return (
     <div className="terminal-success">
