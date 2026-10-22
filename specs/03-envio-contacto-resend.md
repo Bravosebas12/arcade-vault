@@ -1,6 +1,6 @@
 # SPEC 03 — Envío real del formulario de contacto con Resend
 
-> **Estado:** aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 02
 > **Fecha:** 2026-10-21
 > **Objetivo:** Hacer que el formulario de contacto de `/acerca` envíe un correo real al equipo mediante Resend, sin cambiar el diseño portado de `references/home-about/about.jsx`.
@@ -120,20 +120,20 @@ features/about/
 
 ## Criterios de aceptación
 
-- [ ] `npm run lint`, `npx tsc --noEmit`, `npm test` y `npm run build` terminan sin errores.
-- [ ] `.env.example` está versionado con `RESEND_API_KEY`, `CONTACT_TO_EMAIL` y `CONTACT_FROM_EMAIL` vacías y comentadas, y `.env.local` sigue ignorado por Git.
-- [ ] Con solo `RESEND_API_KEY` y `CONTACT_TO_EMAIL` en `.env.local`, el correo sale desde "Arcade Vault <onboarding@resend.dev>".
-- [ ] Con `RESEND_API_KEY` y `CONTACT_TO_EMAIL` igual al correo de la cuenta Resend, enviar como "px_kai" muestra "> MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS, PX_KAI." y el correo llega con asunto "[Arcade Vault] Mensaje de px_kai".
-- [ ] Responder ese correo desde el cliente de correo usa como destinatario el correo que escribió el usuario.
-- [ ] Sin `RESEND_API_KEY`, enviar un formulario válido muestra la terminal de error y la consola del servidor registra el motivo sin el contenido del mensaje.
-- [ ] "REINTENTAR" vuelve al formulario con nombre, correo y mensaje intactos.
-- [ ] Mientras se envía, el botón muestra "▶  ENVIANDO…" y ni el botón ni los campos aceptan entrada.
-- [ ] Enviar con algún campo vacío o solo con espacios sigue aplicando `shake` y no hace ninguna petición al servidor.
-- [ ] Un formulario con el campo `website` relleno muestra la terminal de éxito y no llama a Resend (comprobado en el test de la acción).
-- [ ] Los campos no aceptan más de 40, 254 y 2000 caracteres respectivamente.
-- [ ] Ninguna variable de entorno de Resend aparece en el JavaScript enviado al navegador (`.next/static` no contiene `RESEND_API_KEY` ni su valor).
-- [ ] El formulario en reposo y la terminal de éxito siguen sin diferencias visuales respecto a `references/home-about/` a 1440 px y a 390 px.
-- [ ] Al salir de `/acerca` y volver por navegación de cliente, el formulario aparece vacío en cualquiera de los tres estados (formulario, éxito, error).
+- [x] `npm run lint`, `npx tsc --noEmit`, `npm test` y `npm run build` terminan sin errores.
+- [x] `.env.example` está versionado con `RESEND_API_KEY`, `CONTACT_TO_EMAIL` y `CONTACT_FROM_EMAIL` vacías y comentadas, y `.env.local` sigue ignorado por Git.
+- [x] Con solo `RESEND_API_KEY` y `CONTACT_TO_EMAIL` en `.env.local`, el correo sale desde "Arcade Vault <onboarding@resend.dev>".
+- [x] Con `RESEND_API_KEY` y `CONTACT_TO_EMAIL` igual al correo de la cuenta Resend, enviar como "px_kai" muestra "> MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS, PX_KAI." y el correo llega con asunto "[Arcade Vault] Mensaje de px_kai".
+- [x] Responder ese correo desde el cliente de correo usa como destinatario el correo que escribió el usuario.
+- [x] Sin `RESEND_API_KEY`, enviar un formulario válido muestra la terminal de error y la consola del servidor registra el motivo sin el contenido del mensaje.
+- [x] "REINTENTAR" vuelve al formulario con nombre, correo y mensaje intactos.
+- [x] Mientras se envía, el botón muestra "▶  ENVIANDO…" y ni el botón ni los campos aceptan entrada.
+- [x] Enviar con algún campo vacío o solo con espacios sigue aplicando `shake` y no hace ninguna petición al servidor.
+- [x] Un formulario con el campo `website` relleno muestra la terminal de éxito y no llama a Resend (comprobado en el test de la acción).
+- [x] Los campos no aceptan más de 40, 254 y 2000 caracteres respectivamente.
+- [x] Ninguna variable de entorno de Resend aparece en el JavaScript enviado al navegador (`.next/static` no contiene `RESEND_API_KEY` ni su valor).
+- [x] El formulario en reposo y la terminal de éxito siguen sin diferencias visuales respecto a `references/home-about/` a 1440 px y a 390 px.
+- [x] Al salir de `/acerca` y volver por navegación de cliente, el formulario aparece vacío en cualquiera de los tres estados (formulario, éxito, error).
 
 ---
 
@@ -170,6 +170,17 @@ features/about/
 | Abuso de la cuota de Resend por envíos manuales repetidos.                                                           | Fuera de alcance; el honeypot solo frena bots simples. Queda anotado para un spec futuro.                                               |
 
 ---
+
+## Notas de implementación
+
+Verificado el 2026-10-21 con el MCP de Playwright y un envío real (capturas en `.playwright-screenshots/about/`, no versionadas).
+
+- **Envío real:** el correo llegó a la bandeja de la cuenta Resend con `CONTACT_FROM_EMAIL` vacío (remitente por defecto). `replyTo`, asunto y remitente por defecto también están cubiertos por el test de la acción.
+- **Remitente inválido:** un primer intento con un `@gmail.com` en `CONTACT_FROM_EMAIL` falló con `validation_error: The gmail.com domain is not verified`. Sin dominio propio, el remitente solo puede ser `onboarding@resend.dev`; el correo personal va en `CONTACT_TO_EMAIL`.
+- **Variables de entorno:** Next.js solo lee `.env.local` al arrancar el servidor; tras cambiarlo hay que reiniciar `next dev` o `next start`.
+- **Validación en el cliente:** el formulario tiembla con la regla compartida `validateContactForm`, así que un correo como `a@b`, que `type="email"` acepta, tampoco llega al servidor.
+- **Paridad visual:** el formulario en reposo difiere en 4 px (1440) y 0 px (390) del prototipo, ninguno por encima de 16 por canal.
+- **Fuga de la clave:** `.next/static` no contiene los nombres de las variables ni cadenas con forma de clave de Resend, con un build hecho con `.env.local`.
 
 ## Lo que **no** entra en este spec
 

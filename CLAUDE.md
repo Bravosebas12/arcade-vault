@@ -6,15 +6,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project state
 
-Arcade Vault is a retro arcade game portal (Spanish UI). The visual MVP (SPEC 01, `specs/01-mvp-pantallas.md`) ports every screen of the prototype in `references/templates/` to Next.js with its simulated behavior; SPEC 02 (`specs/02-home-acerca-de.md`) adds the Home landing and Acerca de screens from `references/home-about/`. No real games exist yet. Work is spec-driven: specs live in `specs/NN-slug.md` (see Project skills).
+Arcade Vault is a retro arcade game portal (Spanish UI). The visual MVP (SPEC 01, `specs/01-mvp-pantallas.md`) ports every screen of the prototype in `references/templates/` to Next.js with its simulated behavior; SPEC 02 (`specs/02-home-acerca-de.md`) adds the Home landing and Acerca de screens from `references/home-about/`; SPEC 03 (`specs/03-envio-contacto-resend.md`) makes the Acerca de contact form send a real email with Resend. No real games exist yet. Work is spec-driven: specs live in `specs/NN-slug.md` (see Project skills).
 
 ## Architecture
 
 - **Routes** (`app/`): `/` Home, `/biblioteca` Biblioteca, `/juegos/[id]` Detalle, `/juegos/[id]/jugar` Reproductor, `/acceso` Acceso, `/salon` Salón de la Fama, `/acerca` Acerca de. Pages only resolve params and compose a screen; both `/juegos/[id]` routes use `gameStaticParams` / `resolveGame` (`features/games/lib/game-params.ts`) to prerender every game and call `notFound()` for unknown ids. `params` is a Promise in Next 16.
-- **Code by feature** (`features/<feature>/` with `model/`, `lib/`, `components/`): `games` (catalog copied verbatim from the prototype, `seededScores`, filtering), `session`, `home` (landing; fixed content in `data/home-content.ts`), `library`, `game-detail`, `player`, `auth`, `hall-of-fame`, `about` (simulated contact form, `isContactFormComplete`). Cross-feature UI and helpers live in `shared/` (`Nav`, `MobileMenu`, `Footer`, `format`, `safe-storage`, `use-reveal` for the `.reveal` scroll-in animation, scoped to a screen container). Containers holding state/effects are `"use client"`; presentational components only take props.
+- **Code by feature** (`features/<feature>/` with `model/`, `lib/`, `components/`, and `actions/` for Server Actions only): `games` (catalog copied verbatim from the prototype, `seededScores`, filtering), `session`, `home` (landing; fixed content in `data/home-content.ts`), `library`, `game-detail`, `player`, `auth`, `hall-of-fame`, `about` (contact form sent by the `sendContact` Server Action in `actions/send-contact.ts` via Resend; `validateContactForm` and `CONTACT_LIMITS` are shared by client and server, `buildContactEmail` builds the plain-text email). Cross-feature UI and helpers live in `shared/` (`Nav`, `MobileMenu`, `Footer`, `format`, `safe-storage`, `use-reveal` for the `.reveal` scroll-in animation, scoped to a screen container). Containers holding state/effects are `"use client"`; presentational components only take props.
 - **Prototype parity**: screens reuse the global prototype classes and keep its inline styles and texts. `seededScores` keeps the prototype's LCG and seeds (`detailSeed`, `hallSeed`) so leaderboards show the same rows as the prototype.
 - **Session and persistence**: `SessionProvider` (mounted in `app/layout.tsx`) exposes `useSession()` → `{ user, login, signOut }`. It reads `localStorage["av_user"]` via `useSyncExternalStore` with a `null` server snapshot, so SSR/hydration always start signed out; never read `localStorage` during render elsewhere. Saved scores are appended to `localStorage["av_scores"]` (`features/player/lib/score-storage.ts`). Keys and formats match the prototype; all storage access goes through `shared/lib/safe-storage.ts`, which tolerates corrupt JSON.
-- **Cache Components keeps route state alive** after navigating away (React `<Activity>`), so screens that must start fresh reset their state: the player before navigating, the Acerca de contact form in an effect cleanup (effects unmount when the route is hidden).
+- **Cache Components keeps route state alive** after navigating away (React `<Activity>`), so screens that must start fresh reset their state: the player before navigating, the Acerca de contact form in an effect cleanup (effects unmount when the route is hidden), by remounting its inner form with an incremental `key` because `useActionState` cannot be reset directly.
 
 ## Design reference prototype (`references/templates/`, `references/home-about/`)
 
@@ -40,7 +40,9 @@ npm run test:watch
 npx vitest run features/games/lib/seeded-scores.test.ts -t "is deterministic"  # single file / single test
 ```
 
-Tests cover pure logic only and sit next to the code they test (`*.test.ts` under `features/` and `shared/`, the only folders `vitest.config.ts` includes). There are no component or end-to-end tests yet.
+**Contact email (Resend)**: copy `.env.example` to `.env.local` (git-ignored) and fill `RESEND_API_KEY` and `CONTACT_TO_EMAIL`; `CONTACT_FROM_EMAIL` is optional. They are server-only variables (never `NEXT_PUBLIC_`), read inside the Server Action at request time. Without a verified domain the sender is `onboarding@resend.dev` (the default) and Resend only delivers to the Resend account owner's email, so `CONTACT_TO_EMAIL` must be that address. A missing variable or a Resend error shows the error terminal and logs only the reason to the server console.
+
+Tests cover pure logic only and sit next to the code they test (`*.test.ts` under `features/` and `shared/`, the only folders `vitest.config.ts` includes); the contact Server Action test mocks `resend` with `vi.mock` and never reads `.env.local`. There are no component or end-to-end tests yet.
 
 ## Stack and versions
 
