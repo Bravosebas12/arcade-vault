@@ -1,5 +1,5 @@
-import { LibraryScreen } from "@/features/library/components/LibraryScreen";
+import { HomeScreen } from "@/features/home/components/HomeScreen";
 
-export default function Home() {
-  return <LibraryScreen />;
+export default function HomePage() {
+  return <HomeScreen />;
 }
