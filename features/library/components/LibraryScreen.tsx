@@ -2,12 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { CATS, GAMES } from "@/features/games/data/catalog";
+import { GAMES } from "@/features/games/data/catalog";
 import { filterGames } from "@/features/games/lib/filter-games";
+import { visibleCategories } from "@/features/games/lib/visible-categories";
 import type { CategoryFilter } from "@/features/games/model/game";
 import { Filters } from "@/features/library/components/Filters";
 import { GameCard } from "@/features/library/components/GameCard";
 import { Hero } from "@/features/library/components/Hero";
+
+// Only categories with at least one game get a chip (plus TODOS), so no chip leads to an empty grid.
+const CATEGORIES = visibleCategories(GAMES);
 
 export function LibraryScreen() {
   const router = useRouter();
@@ -18,7 +22,7 @@ export function LibraryScreen() {
   return (
     <div className="fade-in">
       <Hero />
-      <Filters query={query} category={category} categories={CATS} onQueryChange={setQuery} onCategoryChange={setCategory} />
+      <Filters query={query} category={category} categories={CATEGORIES} onQueryChange={setQuery} onCategoryChange={setCategory} />
       <div className="av-grid">
         {games.map((g) => (
           <GameCard key={g.id} game={g} onSelect={(game) => router.push(`/juegos/${game.id}`)} />

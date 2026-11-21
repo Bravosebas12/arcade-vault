@@ -10,17 +10,18 @@ describe("filterGames", () => {
   });
 
   it("filters by category", () => {
-    expect(ids(filterGames(GAMES, "", "SHOOTER"))).toEqual(["invasores", "asteroids"]);
+    expect(ids(filterGames(GAMES, "", "SHOOTER"))).toEqual(["asteroids"]);
+    expect(ids(filterGames(GAMES, "", "PUZZLE"))).toEqual(["falling-blocks"]);
   });
 
   it("filters by title ignoring case", () => {
-    expect(ids(filterGames(GAMES, "caí", "TODOS"))).toEqual(["falling-blocks"]);
+    expect(ids(filterGames(GAMES, "fall", "TODOS"))).toEqual(["falling-blocks"]);
     expect(ids(filterGames(GAMES, "ASTER", "TODOS"))).toEqual(["asteroids"]);
   });
 
   it("combines query and category", () => {
-    expect(ids(filterGames(GAMES, "duelo", "ARCADE"))).toEqual([]);
-    expect(ids(filterGames(GAMES, "duelo", "VERSUS"))).toEqual(["duelo-pixel"]);
+    expect(ids(filterGames(GAMES, "fall", "SHOOTER"))).toEqual([]);
+    expect(ids(filterGames(GAMES, "fall", "PUZZLE"))).toEqual(["falling-blocks"]);
   });
 
   it("returns an empty list when nothing matches", () => {

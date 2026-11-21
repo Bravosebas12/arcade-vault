@@ -2,7 +2,7 @@ export type GameCategory = "ARCADE" | "PUZZLE" | "SHOOTER" | "VERSUS";
 export type CategoryFilter = "TODOS" | GameCategory;
 
 export type Game = {
-  /** Slug used in the URL, e.g. "bloque-buster". */
+  /** Slug used in the URL, e.g. "falling-blocks". */
   id: string;
   title: string;
   /** Card description. */
