@@ -1,16 +1,23 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 type Props = {
   title: string;
   paused: boolean;
   /** A real game; when present it replaces the fake arena. */
   children?: ReactNode;
+  /** Extra inline style for the CRT frame (real games size it to fit the viewport). */
+  frameStyle?: CSSProperties;
 };
 
+// Below the player's mobile breakpoint (720px, as .av-player in globals.css) the footer wraps
+// into centered lines with room between them instead of overlapping; desktop keeps the prototype.
+const BOTTOM_MOBILE = "max-[720px]:flex-wrap max-[720px]:justify-center max-[720px]:gap-x-3 max-[720px]:gap-y-1.5 max-[720px]:leading-[1.6]";
+const BOTTOM_ITEM_MOBILE = "max-[720px]:whitespace-nowrap";
+
 /** CRT frame; shows the fake animated arena unless a real game is passed as children. */
-export function CrtScreen({ title, paused, children }: Props) {
+export function CrtScreen({ title, paused, children, frameStyle }: Props) {
   return (
-    <div className="crt">
+    <div className="crt" style={frameStyle}>
       <div className="crt-screen">
         {children ?? (
           <div className="game-arena">
@@ -30,10 +37,10 @@ export function CrtScreen({ title, paused, children }: Props) {
           </div>
         )}
       </div>
-      <div className="crt-bottom">
-        <span className="led">SEÑAL OK</span>
-        <span>{title} · CRT-83 · 60 HZ</span>
-        <span>CARGA · 1MB</span>
+      <div className={"crt-bottom " + BOTTOM_MOBILE}>
+        <span className={"led " + BOTTOM_ITEM_MOBILE}>SEÑAL OK</span>
+        <span className={BOTTOM_ITEM_MOBILE}>{title} · CRT-83 · 60 HZ</span>
+        <span className={BOTTOM_ITEM_MOBILE}>CARGA · 1MB</span>
       </div>
     </div>
   );
