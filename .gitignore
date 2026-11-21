@@ -44,6 +44,10 @@ next-env.d.ts
 # local tool logs
 /logs/
 
+# gentle-ai skill registry (regenerated locally)
+/.atl/.skill-registry.cache.json
+/.atl/skill-registry.md
+
 # Playwright MCP: transient page snapshots and console logs
 /.playwright-mcp/
 
