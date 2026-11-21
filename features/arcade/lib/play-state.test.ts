@@ -5,7 +5,7 @@ const playing: ArcadePlayState = { ...initialArcadePlayState, stats: { score: 30
 
 describe("arcadePlayReducer", () => {
   it("starts unpaused, not over, unsaved, with no score", () => {
-    expect(initialArcadePlayState).toMatchObject({ paused: false, over: false, saved: false, runId: 0 });
+    expect(initialArcadePlayState).toMatchObject({ paused: false, gameOverPending: false, over: false, saved: false, runId: 0 });
     expect(initialArcadePlayState.stats.score).toBe(0);
   });
 
@@ -30,8 +30,9 @@ describe("arcadePlayReducer", () => {
     expect(arcadePlayReducer(over, { type: "togglePause" })).toBe(over);
   });
 
-  it("gameOver ends the game with the notified stats", () => {
-    const over = arcadePlayReducer(playing, { type: "gameOver", stats: { score: 450, lives: 0, level: 2 } });
+  it("gameOver ends the game with the notified stats once revealed", () => {
+    const lost = arcadePlayReducer(playing, { type: "gameOver", stats: { score: 450, lives: 0, level: 2 } });
+    const over = arcadePlayReducer(lost, { type: "revealGameOver" });
     expect(over.over).toBe(true);
     expect(over.stats).toEqual({ score: 450, lives: 0, level: 2 });
   });
@@ -42,11 +43,51 @@ describe("arcadePlayReducer", () => {
     expect(over.stats).toEqual(playing.stats);
   });
 
-  it("ignores a gameOver after end, and an end after gameOver", () => {
+  it("ignores a gameOver after end, and an end after the game over modal is shown", () => {
     const ended = arcadePlayReducer(playing, { type: "end" });
     expect(arcadePlayReducer(ended, { type: "gameOver", stats: { score: 999, lives: 0, level: 9 } })).toBe(ended);
     const lost = arcadePlayReducer(playing, { type: "gameOver", stats: { score: 450, lives: 0, level: 2 } });
-    expect(arcadePlayReducer(lost, { type: "end" })).toBe(lost);
+    const shown = arcadePlayReducer(lost, { type: "revealGameOver" });
+    expect(arcadePlayReducer(shown, { type: "end" })).toBe(shown);
+  });
+
+  describe("game over delay (natural game over)", () => {
+    const lostStats = { score: 450, lives: 0, level: 2 };
+    const lost = arcadePlayReducer(playing, { type: "gameOver", stats: lostStats });
+
+    it("starts with no pending game over", () => {
+      expect(initialArcadePlayState.gameOverPending).toBe(false);
+    });
+
+    it("gameOver stops the game with the final stats but keeps the modal hidden", () => {
+      expect(lost).toMatchObject({ gameOverPending: true, over: false, stats: lostStats });
+    });
+
+    it("revealGameOver opens the modal keeping the final stats", () => {
+      const shown = arcadePlayReducer(lost, { type: "revealGameOver" });
+      expect(shown).toMatchObject({ gameOverPending: false, over: true, stats: lostStats });
+    });
+
+    it("revealGameOver does nothing without a pending game over", () => {
+      expect(arcadePlayReducer(playing, { type: "revealGameOver" })).toBe(playing);
+      const ended = arcadePlayReducer(playing, { type: "end" });
+      expect(arcadePlayReducer(ended, { type: "revealGameOver" })).toBe(ended);
+    });
+
+    it("ignores pause, stats and a second gameOver while pending", () => {
+      expect(arcadePlayReducer(lost, { type: "togglePause" })).toBe(lost);
+      expect(arcadePlayReducer(lost, { type: "stats", stats: { score: 999, lives: 3, level: 9 } })).toBe(lost);
+      expect(arcadePlayReducer(lost, { type: "gameOver", stats: { score: 999, lives: 0, level: 9 } })).toBe(lost);
+    });
+
+    it("end (FIN) opens the modal right away while pending", () => {
+      const ended = arcadePlayReducer(lost, { type: "end" });
+      expect(ended).toMatchObject({ gameOverPending: false, over: true, stats: lostStats });
+    });
+
+    it("restart cancels the pending game over", () => {
+      expect(arcadePlayReducer(lost, { type: "restart" })).toEqual({ ...initialArcadePlayState, runId: 5 });
+    });
   });
 
   it("saved marks the score as saved", () => {

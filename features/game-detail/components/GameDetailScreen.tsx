@@ -8,9 +8,11 @@ type Props = {
   game: Game;
   /** Leaderboard slot; defaults to the seeded rows (simulated games). */
   leaderboard?: ReactNode;
+  /** "MEJOR GLOBAL" slot; defaults to the catalog figure (simulated games). */
+  best?: ReactNode;
 };
 
-export function GameDetailScreen({ game, leaderboard }: Props) {
+export function GameDetailScreen({ game, leaderboard, best }: Props) {
   return (
     <div className="av-detail fade-in">
       <div>
@@ -33,7 +35,7 @@ export function GameDetailScreen({ game, leaderboard }: Props) {
             </div>
             <div>
               <div className="l">Mejor global</div>
-              <div className="v" style={{ color: "var(--magenta)", textShadow: "0 0 6px rgba(255,0,110,0.5)" }}>{formatScore(game.best)}</div>
+              <div className="v" style={{ color: "var(--magenta)", textShadow: "0 0 6px rgba(255,0,110,0.5)" }}>{best ?? formatScore(game.best)}</div>
             </div>
             <div>
               <div className="l">Dificultad</div>
