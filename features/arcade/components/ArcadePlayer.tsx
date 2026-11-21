@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useReducer, useState, useSyncExternalStore } from "react";
 import { arcadeArenaFit, DEFAULT_ARENA_SIZE, type ArenaSize } from "@/features/arcade/lib/arena-fit";
 import { arcadePlayReducer, initialArcadePlayState, isStopped } from "@/features/arcade/lib/play-state";
+import { useBlockGameKeys } from "@/features/arcade/lib/use-keys";
 import type { ArcadeCanvas, GameStats } from "@/features/arcade/model/arcade-game";
 import type { Game } from "@/features/games/model/game";
 import { submitScore } from "@/features/leaderboard/actions/submit-score";
@@ -66,6 +67,9 @@ export function ArcadePlayer({ game, Canvas, arena = DEFAULT_ARENA_SIZE }: Arcad
     const timer = window.setTimeout(() => dispatch({ type: "revealGameOver" }), GAME_OVER_MODAL_DELAY_MS);
     return () => window.clearTimeout(timer);
   }, [state.gameOverPending]);
+
+  // During that delay the canvas no longer reads the keyboard, so keep arrows/space from scrolling.
+  useBlockGameKeys(state.gameOverPending);
 
   const restart = () => {
     dispatch({ type: "restart" });

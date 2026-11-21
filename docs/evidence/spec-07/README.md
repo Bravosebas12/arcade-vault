@@ -23,7 +23,14 @@ Supabase: the `falling-blocks` row has `max_score` 10 000 000 and `sort_order` 2
 
 ## Findings
 
-1. **The CRT footer crowds on the narrow Caída CRT.** At 1440 px its items run together ("SEÑAL OK CAÍDA · CRT-83 · 60 HZ CARGA · 1MB"). At 1280 px they wrap into ragged two-line blocks. The mobile stacking rule depends on the viewport width, not on the CRT width. Introduced by this spec.
-2. **Space scrolls the page during the 1.5 s game-over delay.** The keyboard listener is disabled once the game ends, so Space and the arrows reach the page (see the game-over capture). This also applies to Asteroides.
+1. ✅ **Fixed in this PR.** **The CRT footer crowded on the narrow Caída CRT.** At 1440 px its items run together ("SEÑAL OK CAÍDA · CRT-83 · 60 HZ CARGA · 1MB"). At 1280 px they wrap into ragged two-line blocks. The mobile stacking rule depends on the viewport width, not on the CRT width. Introduced by this spec.
+2. ✅ **Fixed in this PR.** **Space scrolled the page during the 1.5 s game-over delay.** The keyboard listener is disabled once the game ends, so Space and the arrows reach the page (see the game-over capture). This also applies to Asteroides.
 3. **"Í" renders as a wrong glyph in the pixel font** ("CAÍDA" shows as "CA‡DA" in the Salón tab, the detail title and the CRT footer). The pinned Press Start 2P subset lacks the glyph. This is pre-existing: the catalog title already rendered this way before this spec.
 4. When FIN is pressed during play, the canvas also shows "PAUSA" behind the modal, because it only receives `paused`. This is cosmetic.
+
+## Fixes verified (Playwright 10/10)
+
+- **Footer:** `.crt` is now a container (`@container`), and the footer stacks below 560 px of **CRT** width (`@max-[560px]:`) instead of viewport width.
+  - Caída: 2 rows at 1440 px, 3 rows at 1280 and 390 px, with no overlap ([`player/desktop-1440/app.png`](player/desktop-1440/app.png), [`player/desktop-1280/app.png`](player/desktop-1280/app.png)).
+  - Asteroides (848 / 608 px) and the simulated games (1052 px) keep the single 12 px prototype row.
+- **Scroll:** `useBlockGameKeys` (in `use-keys.ts`) prevents arrows/Space from scrolling while `gameOverPending`. Pressing Space and ↓ during the delay keeps `scrollY` at 0 in both games, and typing a space in the modal still works.

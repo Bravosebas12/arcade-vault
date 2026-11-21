@@ -27,6 +27,22 @@ function createKeyStore() {
 }
 
 /**
+ * While enabled, keeps the arrows and space from scrolling the page without passing them to any
+ * game (e.g. during the game-over delay, when the canvas no longer reads the keyboard).
+ * Ignores events typed into inputs.
+ */
+export function useBlockGameKeys(enabled: boolean) {
+  useEffect(() => {
+    if (!enabled) return;
+    const listener = (e: KeyboardEvent) => {
+      if (!isTextInput(e.target) && GAME_KEYS.has(e.code)) e.preventDefault();
+    };
+    window.addEventListener("keydown", listener);
+    return () => window.removeEventListener("keydown", listener);
+  }, [enabled]);
+}
+
+/**
  * Calls `onKeyDown(code)` on every keydown on window while enabled, including the OS auto-repeat
  * of a held key (games that move one step per event). Ignores events typed into inputs and
  * prevents the page from scrolling with the arrows and space.
