@@ -1,12 +1,16 @@
 import Link from "next/link";
-import { Leaderboard } from "@/features/game-detail/components/Leaderboard";
-import { detailSeed, seededScores } from "@/features/games/lib/seeded-scores";
+import type { ReactNode } from "react";
+import { SeededLeaderboard } from "@/features/game-detail/components/GameLeaderboard";
 import type { Game } from "@/features/games/model/game";
 import { formatScore } from "@/shared/lib/format";
 
-export function GameDetailScreen({ game }: { game: Game }) {
-  const scores = seededScores(detailSeed(game.id), 10);
+type Props = {
+  game: Game;
+  /** Leaderboard slot; defaults to the seeded rows (simulated games). */
+  leaderboard?: ReactNode;
+};
 
+export function GameDetailScreen({ game, leaderboard }: Props) {
   return (
     <div className="av-detail fade-in">
       <div>
@@ -44,7 +48,7 @@ export function GameDetailScreen({ game }: { game: Game }) {
       </div>
 
       <aside>
-        <Leaderboard rows={scores} />
+        {leaderboard ?? <SeededLeaderboard gameId={game.id} />}
       </aside>
     </div>
   );

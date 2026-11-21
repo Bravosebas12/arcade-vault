@@ -1,14 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useState, useSyncExternalStore } from "react";
 import { arcadePlayReducer, initialArcadePlayState } from "@/features/arcade/lib/play-state";
 import type { ArcadeCanvas, GameStats } from "@/features/arcade/model/arcade-game";
 import type { Game } from "@/features/games/model/game";
+import { submitScore } from "@/features/leaderboard/actions/submit-score";
+import { toPlayerName } from "@/features/leaderboard/lib/score-input";
 import { CrtScreen } from "@/features/player/components/CrtScreen";
 import { GameOverModal } from "@/features/player/components/GameOverModal";
 import { Hud } from "@/features/player/components/Hud";
-import { appendScore } from "@/features/player/lib/score-storage";
+import { appendScore, readPlayerName, savePlayerName } from "@/features/player/lib/score-storage";
 import { useSession } from "@/features/session/SessionProvider";
 
 type ArcadePlayerProps = { game: Game; Canvas: ArcadeCanvas };
@@ -17,14 +19,20 @@ function isTextInput(target: EventTarget | null) {
   return target instanceof HTMLElement && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable);
 }
 
+// av_player_name is read through useSyncExternalStore with a null server snapshot, so it is only
+// read after mount (never during SSR/hydration); the snapshot is a string, so it stays stable.
+const subscribeNoop = () => () => {};
+const getServerName = () => null;
+
 /** Player for real games: owns pause, FIN, restart and the save-score modal; the canvas obeys through props. */
 export function ArcadePlayer({ game, Canvas }: ArcadePlayerProps) {
   const router = useRouter();
   const { user } = useSession();
   const [state, dispatch] = useReducer(arcadePlayReducer, initialArcadePlayState);
-  // null until the player edits it, so the default follows the session once it hydrates.
+  // null until the player edits it, so the default follows the remembered name or the session once hydrated.
   const [editedName, setEditedName] = useState<string | null>(null);
-  const name = editedName ?? (user ? user.name : "INVITADO");
+  const rememberedName = useSyncExternalStore(subscribeNoop, readPlayerName, getServerName);
+  const name = editedName ?? rememberedName ?? (user ? user.name : "INVITADO");
 
   // P and Escape toggle the pause while the game is running (no modal).
   useEffect(() => {
@@ -48,9 +56,15 @@ export function ArcadePlayer({ game, Canvas }: ArcadePlayerProps) {
     router.push(href);
   };
 
+  // Local copy first and "saved" right away: the remote save never blocks the player,
+  // and its failures are only logged on the server.
   const save = () => {
-    appendScore({ game: game.id, score: state.stats.score, name });
+    const playerName = toPlayerName(name);
+    const score = state.stats.score;
+    appendScore({ game: game.id, score, name: playerName });
+    savePlayerName(playerName);
     dispatch({ type: "saved" });
+    submitScore({ gameId: game.id, score, name: playerName }).catch(() => {});
   };
 
   return (
