@@ -54,3 +54,6 @@ next-env.d.ts
 # Playwright screenshots (kept locally, organized by screen/feature; see CLAUDE.md)
 .playwright-screenshots/*
 !.playwright-screenshots/.gitkeep
+
+# Local planning base for the playable games specs (not versioned)
+/specs/_base-juegos-jugables.md
