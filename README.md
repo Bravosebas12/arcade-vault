@@ -1,6 +1,6 @@
 # Arcade Vault
 
-Portal de juegos arcade retro con estética neón/CRT, construido con Next.js 16. Incluye la portada, la biblioteca de juegos, el detalle, los juegos reales (Asteroides y Falling Blocks; el catálogo solo muestra juegos implementados), el acceso, el Salón de la Fama con rankings reales en [Supabase](https://supabase.com) y la página Acerca de con un formulario de contacto que envía correos reales con [Resend](https://resend.com).
+Portal de juegos arcade retro con estética neón/CRT, construido con Next.js 16. Incluye la portada, la biblioteca de juegos, el detalle, los juegos reales (Asteroides, Falling Blocks y Brick Breaker; el catálogo solo muestra juegos implementados), el acceso, el Salón de la Fama con rankings reales en [Supabase](https://supabase.com) y la página Acerca de con un formulario de contacto que envía correos reales con [Resend](https://resend.com).
 
 ## Inicio rápido
 
@@ -106,6 +106,7 @@ Antes de abrir un PR, deben pasar `npm run lint`, `npx tsc --noEmit`, `npm test`
 | `/juegos/[id]` | Detalle de un juego |
 | `/juegos/asteroids/jugar` | Asteroides |
 | `/juegos/falling-blocks/jugar` | Falling Blocks |
+| `/juegos/brick-breaker/jugar` | Brick Breaker |
 | `/acceso` | Iniciar sesión / crear cuenta (simulado) |
 | `/salon` | Salón de la Fama (ranking real por juego real) |
 | `/acerca` | Acerca de y formulario de contacto |
