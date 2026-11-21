@@ -1,20 +1,26 @@
+import type { ReactNode } from "react";
+
 type Props = {
   title: string;
   paused: boolean;
+  /** A real game; when present it replaces the fake arena. */
+  children?: ReactNode;
 };
 
-/** CRT frame with the fake animated arena; no real game runs here. */
-export function CrtScreen({ title, paused }: Props) {
+/** CRT frame; shows the fake animated arena unless a real game is passed as children. */
+export function CrtScreen({ title, paused, children }: Props) {
   return (
     <div className="crt">
       <div className="crt-screen">
-        <div className="game-arena">
-          <div className="grid-floor"></div>
-          <div className="enemy e1"></div>
-          <div className="enemy e2"></div>
-          <div className="enemy e3"></div>
-          <div className="player-ship"></div>
-        </div>
+        {children ?? (
+          <div className="game-arena">
+            <div className="grid-floor"></div>
+            <div className="enemy e1"></div>
+            <div className="enemy e2"></div>
+            <div className="enemy e3"></div>
+            <div className="player-ship"></div>
+          </div>
+        )}
         {paused && (
           <div className="crt-content" style={{ background: "rgba(0,0,0,0.6)", zIndex: 5 }}>
             <div>

@@ -54,3 +54,13 @@ next-env.d.ts
 # Playwright screenshots (kept locally, organized by screen/feature; see CLAUDE.md)
 .playwright-screenshots/*
 !.playwright-screenshots/.gitkeep
+
+# Local planning base for the playable games specs (not versioned)
+/specs/_base-juegos-jugables.md
+
+# Ported game references: keep sources, drop OS and tool metadata
+references/started-games/**/.DS_Store
+references/started-games/*/.github/
+references/started-games/*/.agents/
+references/started-games/*/.claude/
+references/started-games/*/.Claude/

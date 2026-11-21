@@ -3,7 +3,8 @@ import { formatRank, formatScore } from "@/shared/lib/format";
 type Props = {
   name: string;
   score: number;
-  lives: number;
+  /** null for games without lives: shows "—". */
+  lives: number | null;
   level: number;
   paused: boolean;
   onTogglePause: () => void;
@@ -17,7 +18,7 @@ export function Hud({ name, score, lives, level, paused, onTogglePause, onEnd, o
       <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
         <div className="hud-stat"><div className="l">Jugador</div><div className="v" style={{ color: "var(--ink)" }}>{name}</div></div>
         <div className="hud-stat"><div className="l">Puntuación</div><div className="v">{formatScore(score)}</div></div>
-        <div className="hud-stat lives"><div className="l">Vidas</div><div className="v">{"♥ ".repeat(lives).trim() || "—"}</div></div>
+        <div className="hud-stat lives"><div className="l">Vidas</div><div className="v">{"♥ ".repeat(lives ?? 0).trim() || "—"}</div></div>
         <div className="hud-stat level"><div className="l">Nivel</div><div className="v">{formatRank(level)}</div></div>
       </div>
       <div className="hud-actions">
