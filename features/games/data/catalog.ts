@@ -3,6 +3,17 @@ import type { CategoryFilter, Game } from "@/features/games/model/game";
 
 export const GAMES: readonly Game[] = [
   {
+    id: "brick-breaker",
+    title: "BRICK BREAKER",
+    short: "Rebota la pelota y destruye muros de neón.",
+    long: "Pilota una nave-paleta y rebota un núcleo de plasma para pulverizar muros de bloques cromáticos. Cada nivel reorganiza la grilla en patrones imposibles. ¿Hasta dónde llegará tu racha?",
+    cat: "ARCADE",
+    cover: "cover-bricks",
+    color: "cyan",
+    best: 28450,
+    plays: "12.4K",
+  },
+  {
     id: "falling-blocks",
     title: "FALLING BLOCKS",
     short: "Encaja las piezas antes de que el techo te aplaste.",
