@@ -1,6 +1,6 @@
 # SPEC 05 — Juego jugable: Asteroides
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 01
 > **Fecha:** 2026-11-20
 > **Objetivo:** Portar a TypeScript el juego de `references/started-games/02-asteroids/` como el juego `asteroids` del catálogo (antes `rocas`), aislado en `features/arcade/asteroids/` y servido por su propia ruta `/juegos/asteroids/jugar`, con su canvas, sus controles y su HUD interno, notificando a React la puntuación, las vidas, el nivel y el fin de la partida.
@@ -265,29 +265,29 @@ references/started-games/         # versionada sin .DS_Store, .github, .agents n
 
 ## Criterios de aceptación
 
-- [ ] `npm run lint`, `npx tsc --noEmit`, `npm test` y `npm run build` terminan sin errores.
-- [ ] `npm run build` lista `/juegos/asteroids/jugar` como ruta propia, y `/juegos/[id]/jugar` ya no genera `asteroids`.
-- [ ] `app/juegos/[id]/jugar/page.tsx` y `PlayerScreen.tsx` no contienen ninguna referencia a `asteroids`, `features/arcade` ni `PLAYABLE_GAME_IDS`.
-- [ ] `/juegos/asteroids/jugar` muestra el juego real en la pantalla CRT y no la arena falsa.
-- [ ] Los demás juegos del catálogo siguen mostrando la arena falsa y el contador simulado, igual que antes.
+- [x] `npm run lint`, `npx tsc --noEmit`, `npm test` y `npm run build` terminan sin errores.
+- [x] `npm run build` lista `/juegos/asteroids/jugar` como ruta propia, y `/juegos/[id]/jugar` ya no genera `asteroids`.
+- [x] `app/juegos/[id]/jugar/page.tsx` y `PlayerScreen.tsx` no contienen ninguna referencia a `asteroids`, `features/arcade` ni `PLAYABLE_GAME_IDS`.
+- [x] `/juegos/asteroids/jugar` muestra el juego real en la pantalla CRT y no la arena falsa.
+- [x] Los demás juegos del catálogo siguen mostrando la arena falsa y el contador simulado, igual que antes.
 - [ ] Se ven a la vez el HUD interno del canvas ("SCORE", "NIVEL n", vidas) y el HUD del Reproductor, y muestran en todo momento la misma puntuación, nivel y vidas.
-- [ ] Flechas izquierda y derecha giran la nave, flecha arriba la impulsa y espacio dispara, como en el original.
+- [x] Flechas izquierda y derecha giran la nave, flecha arriba la impulsa y espacio dispara, como en el original.
 - [ ] Recoger el power-up muestra "3x  Ns" en el HUD del canvas y dispara tres balas durante 5 s.
-- [ ] PAUSA, P y Escape, gestionados por el contenedor, congelan el juego y muestran "EN PAUSA"; REANUDAR lo continúa desde el mismo punto sin salto de los objetos.
-- [ ] Al perder la última vida, el canvas dibuja "GAME OVER" / "PUNTAJE: X" y el modal "FIN DEL JUEGO" se abre solo con esa puntuación.
-- [ ] Tras "GAME OVER", pulsar espacio no reinicia la partida.
-- [ ] FIN abre el modal con la puntuación del momento y el juego queda congelado detrás.
-- [ ] GUARDAR PUNTUACIÓN añade `{ game: "asteroids", score, name, at }` a `localStorage["av_scores"]` con la puntuación real.
-- [ ] JUGAR DE NUEVO empieza una partida nueva: puntuación 0, nivel 1, 3 vidas y 4 asteroides.
-- [ ] Escribir iniciales con espacios y flechas en el modal no mueve la nave ni desplaza la página.
-- [ ] Durante la partida, las flechas y el espacio no desplazan la página.
-- [ ] Al salir con SALIR y volver a Asteroides por navegación de cliente, la partida empieza de cero y no quedan dos bucles corriendo.
+- [x] PAUSA, P y Escape, gestionados por el contenedor, congelan el juego y muestran "EN PAUSA"; REANUDAR lo continúa desde el mismo punto sin salto de los objetos.
+- [x] Al perder la última vida, el canvas dibuja "GAME OVER" / "PUNTAJE: X" y el modal "FIN DEL JUEGO" se abre solo con esa puntuación.
+- [x] Tras "GAME OVER", pulsar espacio no reinicia la partida.
+- [x] FIN abre el modal con la puntuación del momento y el juego queda congelado detrás.
+- [x] GUARDAR PUNTUACIÓN añade `{ game: "asteroids", score, name, at }` a `localStorage["av_scores"]` con la puntuación real.
+- [x] JUGAR DE NUEVO empieza una partida nueva: puntuación 0, nivel 1, 3 vidas y 4 asteroides.
+- [x] Escribir iniciales con espacios y flechas en el modal no mueve la nave ni desplaza la página.
+- [x] Durante la partida, las flechas y el espacio no desplazan la página.
+- [x] Al salir con SALIR y volver a Asteroides por navegación de cliente, la partida empieza de cero y no quedan dos bucles corriendo.
 - [ ] El título visible del juego es "ASTEROIDES" en Biblioteca, Detalle, Home, Salón y la CRT, y ningún texto visible dice "Asteroids".
 - [ ] Biblioteca, Detalle, Home y Salón enlazan a `/juegos/asteroids`; `/juegos/rocas` responde 404.
-- [ ] Ningún archivo de `app/`, `features/` ni `shared/` contiene el `id` `"rocas"`; solo queda la clase `cover-rocas` de `globals.css` y del catálogo.
-- [ ] El canvas se escala dentro de la pantalla CRT sin deformarse a 1440 px y a 390 px.
-- [ ] La consola del navegador no muestra errores en `/juegos/asteroids/jugar`.
-- [ ] `references/started-games/` está versionada sin `.DS_Store`, `.github`, `.agents` ni `.claude`.
+- [x] Ningún archivo de `app/`, `features/` ni `shared/` contiene el `id` `"rocas"`; solo queda la clase `cover-rocas` de `globals.css` y del catálogo.
+- [x] El canvas se escala dentro de la pantalla CRT sin deformarse a 1440 px y a 390 px.
+- [x] La consola del navegador no muestra errores en `/juegos/asteroids/jugar`.
+- [x] `references/started-games/` está versionada sin `.DS_Store`, `.github`, `.agents` ni `.claude`.
 
 ---
 
@@ -339,6 +339,30 @@ references/started-games/         # versionada sin .DS_Store, .github, .agents n
 | El disparo se repite sin soltar espacio (el original dispara solo al pulsar).                           | `use-keys` distingue teclas pulsadas de recién pulsadas; un test comprueba la espera de 0,2 s.                                                                                    |
 | El port cambia la jugabilidad respecto al original.                                                     | Mismas constantes que el original, en `constants.ts` y cubiertas por los tests; `references/started-games/` queda versionada para comparar.                                      |
 | Los colores de `getComputedStyle` llegan vacíos en el primer render.                                 | La paleta se lee en un efecto, después de montar, con valores por defecto si un token falta.                                                                                        |
+
+---
+
+## Notas de implementación
+
+Implementado y verificado el 2026-11-20 con Playwright (Chromium) contra `next start`. Las capturas están en `.playwright-screenshots/player/asteroids-game/` y no se versionan. Los criterios sin marcar no se pudieron comprobar automáticamente.
+
+- **Verificación automática:**
+  - un solo bucle (60 rAF/s), también al salir y volver
+  - pausa con P, Escape y botón, con el canvas idéntico entre fotogramas
+  - FIN y fin natural abren el modal con la puntuación del HUD
+  - espacio tras "GAME OVER" no reinicia
+  - escribir en el modal no mueve el juego ni hace scroll
+  - `av_scores` recibe `{ game: "asteroids", … }`
+  - canvas 4:3 dentro de la CRT a 1440 y 390 px
+  - sin errores de consola.
+- **Sin verificar automáticamente:** que los dos HUD coincidan (el texto del canvas no se puede leer desde el DOM; se ve en las capturas) y el power-up, que no apareció de forma fiable en la partida automática. Tampoco se recorrieron los enlaces y títulos de Biblioteca, Home y Salón; se derivan de `game.id` y `game.title`.
+- **`/juegos/rocas`:** al navegar responde 404 con `noindex`. Una petición HTTP directa puede recibir 200 porque la respuesta se transmite antes de `notFound()`; pasa igual con cualquier id desconocido.
+- **Desviaciones:**
+  - `app/juegos/[id]/page.tsx` usa el nuevo `allGameStaticParams`, porque `gameStaticParams` ahora excluye los juegos jugables y el Detalle debe seguir generando `/juegos/asteroids`.
+  - `constants.ts` añade otras cifras del original, como el factor de colisión 0,82 y los rangos de partículas.
+  - El parpadeo del propulsor y el pulso del power-up usan `state.time` en lugar de `Math.random` y el reloj, para que una partida pausada quede congelada.
+  - El HUD del Reproductor muestra "—" en vidas hasta el primer `onStats`.
+- **Problemas anteriores a este spec:** a 390 px, el botón de menú desborda 6 px en todas las páginas, y la página 404 no muestra ningún mensaje.
 
 ---
 
