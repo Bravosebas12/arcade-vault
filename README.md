@@ -1,6 +1,6 @@
 # Arcade Vault
 
-Portal de juegos arcade retro con estética neón/CRT, construido con Next.js 16. Incluye la portada, la biblioteca de juegos, el detalle, el reproductor (con Asteroides como primer juego real), el acceso, el Salón de la Fama con rankings reales en [Supabase](https://supabase.com) y la página Acerca de con un formulario de contacto que envía correos reales con [Resend](https://resend.com).
+Portal de juegos arcade retro con estética neón/CRT, construido con Next.js 16. Incluye la portada, la biblioteca de juegos, el detalle, los juegos reales (Asteroides y Falling Blocks; el catálogo solo muestra juegos implementados), el acceso, el Salón de la Fama con rankings reales en [Supabase](https://supabase.com) y la página Acerca de con un formulario de contacto que envía correos reales con [Resend](https://resend.com).
 
 ## Inicio rápido
 
@@ -104,15 +104,14 @@ Antes de abrir un PR, deben pasar `npm run lint`, `npx tsc --noEmit`, `npm test`
 | `/` | Home (portada) |
 | `/biblioteca` | Biblioteca de juegos con búsqueda y filtro |
 | `/juegos/[id]` | Detalle de un juego |
-| `/juegos/[id]/jugar` | Reproductor simulado (juegos sin implementar) |
-| `/juegos/asteroids/jugar` | Asteroides, el primer juego real |
+| `/juegos/asteroids/jugar` | Asteroides |
+| `/juegos/falling-blocks/jugar` | Falling Blocks |
 | `/acceso` | Iniciar sesión / crear cuenta (simulado) |
 | `/salon` | Salón de la Fama (ranking real por juego real) |
 | `/acerca` | Acerca de y formulario de contacto |
 | `/api/health` | Comprueba la conexión con Supabase |
 
-La sesión sigue simulada en `localStorage` (`av_user`). Las puntuaciones de los juegos reales se guardan en Supabase (tablas `games` y `scores`) y, como copia local, en `localStorage` (`av_scores`, y el último nombre usado en `av_player_name`). Las de los juegos simulados solo se guardan en local.
-
+La sesión sigue simulada en `localStorage` (`av_user`). Las puntuaciones de los juegos reales se guardan en Supabase (tablas `games` y `scores`) y, como copia local, en `localStorage` (`av_scores`, y el último nombre usado en `av_player_name`).
 ## Despliegue
 
 `.env.local` no se sube al repositorio. En el proveedor de despliegue (por ejemplo, Vercel) configura como variables de entorno:
