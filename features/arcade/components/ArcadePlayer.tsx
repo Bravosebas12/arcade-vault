@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useReducer, useState, useSyncExternalStore } from "react";
-import { arcadePlayReducer, initialArcadePlayState } from "@/features/arcade/lib/play-state";
+import { ARCADE_CRT_FIT_STYLE } from "@/features/arcade/lib/arena-fit";
+import { arcadePlayReducer, initialArcadePlayState, isStopped } from "@/features/arcade/lib/play-state";
 import type { ArcadeCanvas, GameStats } from "@/features/arcade/model/arcade-game";
 import type { Game } from "@/features/games/model/game";
 import { submitScore } from "@/features/leaderboard/actions/submit-score";
@@ -24,6 +25,9 @@ function isTextInput(target: EventTarget | null) {
 const subscribeNoop = () => () => {};
 const getServerName = () => null;
 
+/** Time the canvas "GAME OVER" stays visible before the save-score modal opens. */
+const GAME_OVER_MODAL_DELAY_MS = 1500;
+
 /** Player for real games: owns pause, FIN, restart and the save-score modal; the canvas obeys through props. */
 export function ArcadePlayer({ game, Canvas }: ArcadePlayerProps) {
   const router = useRouter();
@@ -34,16 +38,28 @@ export function ArcadePlayer({ game, Canvas }: ArcadePlayerProps) {
   const rememberedName = useSyncExternalStore(subscribeNoop, readPlayerName, getServerName);
   const name = editedName ?? rememberedName ?? (user ? user.name : "INVITADO");
 
-  // P and Escape toggle the pause while the game is running (no modal).
+  const stopped = isStopped(state);
+
+  // P and Escape toggle the pause while the game is running (no game over, no modal).
   useEffect(() => {
-    if (state.over) return;
+    if (stopped) return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.repeat || isTextInput(e.target)) return;
       if (e.code === "KeyP" || e.code === "Escape") dispatch({ type: "togglePause" });
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [state.over]);
+  }, [stopped]);
+
+  // A natural game over shows the canvas "GAME OVER" first and opens the modal afterwards. The
+  // cleanup cancels the timer on restart, on FIN (which opens the modal itself) and when the route
+  // is hidden (Cache Components keeps it mounted but cleans up its effects; showing it again
+  // re-runs the effect, so the pending modal still opens after the delay).
+  useEffect(() => {
+    if (!state.gameOverPending) return;
+    const timer = window.setTimeout(() => dispatch({ type: "revealGameOver" }), GAME_OVER_MODAL_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [state.gameOverPending]);
 
   const restart = () => {
     dispatch({ type: "restart" });
@@ -80,9 +96,9 @@ export function ArcadePlayer({ game, Canvas }: ArcadePlayerProps) {
         onExit={() => leaveTo(`/juegos/${game.id}`)}
       />
 
-      <CrtScreen title={game.title} paused={state.paused}>
+      <CrtScreen title={game.title} paused={state.paused} frameStyle={ARCADE_CRT_FIT_STYLE}>
         <Canvas
-          paused={state.paused || state.over}
+          paused={state.paused || stopped}
           runId={state.runId}
           onStats={(stats: GameStats) => dispatch({ type: "stats", stats })}
           onGameOver={(stats: GameStats) => dispatch({ type: "gameOver", stats })}
