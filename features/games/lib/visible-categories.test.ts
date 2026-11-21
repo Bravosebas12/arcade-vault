@@ -26,6 +26,6 @@ describe("visibleCategories", () => {
   });
 
   it("matches the categories of the current catalog", () => {
-    expect(visibleCategories(GAMES)).toEqual(["TODOS", "PUZZLE", "SHOOTER"]);
+    expect(visibleCategories(GAMES)).toEqual(["TODOS", "ARCADE", "PUZZLE", "SHOOTER"]);
   });
 });
