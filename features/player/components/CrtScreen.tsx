@@ -7,6 +7,8 @@ type Props = {
   children?: ReactNode;
   /** Extra inline style for the CRT frame (real games size it to fit the viewport). */
   frameStyle?: CSSProperties;
+  /** Extra inline style for the screen (real games set their canvas proportion). */
+  screenStyle?: CSSProperties;
 };
 
 // Below the player's mobile breakpoint (720px, as .av-player in globals.css) the footer wraps
@@ -15,10 +17,10 @@ const BOTTOM_MOBILE = "max-[720px]:flex-wrap max-[720px]:justify-center max-[720
 const BOTTOM_ITEM_MOBILE = "max-[720px]:whitespace-nowrap";
 
 /** CRT frame; shows the fake animated arena unless a real game is passed as children. */
-export function CrtScreen({ title, paused, children, frameStyle }: Props) {
+export function CrtScreen({ title, paused, children, frameStyle, screenStyle }: Props) {
   return (
     <div className="crt" style={frameStyle}>
-      <div className="crt-screen">
+      <div className="crt-screen" style={screenStyle}>
         {children ?? (
           <div className="game-arena">
             <div className="grid-floor"></div>

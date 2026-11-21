@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useReducer, useState, useSyncExternalStore } from "react";
-import { ARCADE_CRT_FIT_STYLE } from "@/features/arcade/lib/arena-fit";
+import { arcadeArenaFit, DEFAULT_ARENA_SIZE, type ArenaSize } from "@/features/arcade/lib/arena-fit";
 import { arcadePlayReducer, initialArcadePlayState, isStopped } from "@/features/arcade/lib/play-state";
 import type { ArcadeCanvas, GameStats } from "@/features/arcade/model/arcade-game";
 import type { Game } from "@/features/games/model/game";
@@ -14,7 +14,12 @@ import { Hud } from "@/features/player/components/Hud";
 import { appendScore, readPlayerName, savePlayerName } from "@/features/player/lib/score-storage";
 import { useSession } from "@/features/session/SessionProvider";
 
-type ArcadePlayerProps = { game: Game; Canvas: ArcadeCanvas };
+type ArcadePlayerProps = {
+  game: Game;
+  Canvas: ArcadeCanvas;
+  /** Logical canvas size: the CRT takes its proportion and never grows past it (default 800×600, 4:3). */
+  arena?: ArenaSize;
+};
 
 function isTextInput(target: EventTarget | null) {
   return target instanceof HTMLElement && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable);
@@ -29,7 +34,7 @@ const getServerName = () => null;
 const GAME_OVER_MODAL_DELAY_MS = 1500;
 
 /** Player for real games: owns pause, FIN, restart and the save-score modal; the canvas obeys through props. */
-export function ArcadePlayer({ game, Canvas }: ArcadePlayerProps) {
+export function ArcadePlayer({ game, Canvas, arena = DEFAULT_ARENA_SIZE }: ArcadePlayerProps) {
   const router = useRouter();
   const { user } = useSession();
   const [state, dispatch] = useReducer(arcadePlayReducer, initialArcadePlayState);
@@ -39,6 +44,7 @@ export function ArcadePlayer({ game, Canvas }: ArcadePlayerProps) {
   const name = editedName ?? rememberedName ?? (user ? user.name : "INVITADO");
 
   const stopped = isStopped(state);
+  const fit = arcadeArenaFit(arena);
 
   // P and Escape toggle the pause while the game is running (no game over, no modal).
   useEffect(() => {
@@ -96,7 +102,7 @@ export function ArcadePlayer({ game, Canvas }: ArcadePlayerProps) {
         onExit={() => leaveTo(`/juegos/${game.id}`)}
       />
 
-      <CrtScreen title={game.title} paused={state.paused} frameStyle={ARCADE_CRT_FIT_STYLE}>
+      <CrtScreen title={game.title} paused={state.paused} frameStyle={fit.frame} screenStyle={fit.screen}>
         <Canvas
           paused={state.paused || stopped}
           runId={state.runId}
