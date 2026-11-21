@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 
 /** Keys whose default action (page scroll) is prevented while a game reads the keyboard. */
 const GAME_KEYS = new Set(["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Space"]);
@@ -24,6 +24,26 @@ function createKeyStore() {
     consumePressed: (code) => pressed.delete(code),
   };
   return { down, pressed, state };
+}
+
+/**
+ * Calls `onKeyDown(code)` on every keydown on window while enabled, including the OS auto-repeat
+ * of a held key (games that move one step per event). Ignores events typed into inputs and
+ * prevents the page from scrolling with the arrows and space.
+ */
+export function useKeyDown(enabled: boolean, onKeyDown: (code: string) => void) {
+  const handle = useEffectEvent(onKeyDown);
+
+  useEffect(() => {
+    if (!enabled) return;
+    const listener = (e: KeyboardEvent) => {
+      if (isTextInput(e.target)) return;
+      if (GAME_KEYS.has(e.code)) e.preventDefault();
+      handle(e.code);
+    };
+    window.addEventListener("keydown", listener);
+    return () => window.removeEventListener("keydown", listener);
+  }, [enabled]);
 }
 
 /**
