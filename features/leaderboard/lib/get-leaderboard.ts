@@ -1,0 +1,60 @@
+import { connection } from "next/server";
+import type { LeaderboardRow } from "@/features/games/model/game";
+import { toGameRecord, toLeaderboardRows } from "@/features/leaderboard/lib/leaderboard-rows";
+import type { GameRecord } from "@/features/leaderboard/model/game-row";
+import { createClient } from "@/shared/lib/supabase/server";
+
+// Server-only reads (createClient uses next/headers). Both run at request time, so the
+// leaderboards are never prerendered: callers render them inside <Suspense>.
+
+/** Public columns of scores: anon has no privilege on user_id, so selecting it would fail. */
+const SCORE_COLUMNS = "id, game_id, player_name, score, created_at";
+
+const logFailure = (reason: string, detail = "") => console.error("[leaderboard] Read failed:", reason, detail);
+
+/** Real games ordered by sort_order. null → no Supabase or error: use catalog.ts + PLAYABLE_GAME_IDS. */
+export async function getLeaderboardGames(): Promise<GameRecord[] | null> {
+  await connection();
+  const supabase = await createClient();
+  if (!supabase) return null;
+
+  try {
+    const { data, error } = await supabase.from("games").select("*").order("sort_order", { ascending: true });
+    if (error) {
+      logFailure("games query failed", `${error.code}: ${error.message}`);
+      return null;
+    }
+    return data.map(toGameRecord);
+  } catch (e) {
+    logFailure("games query threw", e instanceof Error ? `${e.name}: ${e.message}` : "UnknownError");
+    return null;
+  }
+}
+
+/**
+ * Top `limit` scores of a game: highest first, oldest first on ties.
+ * null → use seededScores. [] → "SÉ EL PRIMERO EN ENTRAR EN LA SALA DE LA FAMA".
+ */
+export async function getLeaderboard(gameId: string, limit: number): Promise<LeaderboardRow[] | null> {
+  await connection();
+  const supabase = await createClient();
+  if (!supabase) return null;
+
+  try {
+    const { data, error } = await supabase
+      .from("scores")
+      .select(SCORE_COLUMNS)
+      .eq("game_id", gameId)
+      .order("score", { ascending: false })
+      .order("created_at", { ascending: true })
+      .limit(limit);
+    if (error) {
+      logFailure("scores query failed", `${error.code}: ${error.message}`);
+      return null;
+    }
+    return toLeaderboardRows(data);
+  } catch (e) {
+    logFailure("scores query threw", e instanceof Error ? `${e.name}: ${e.message}` : "UnknownError");
+    return null;
+  }
+}
