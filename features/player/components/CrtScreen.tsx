@@ -7,18 +7,22 @@ type Props = {
   children?: ReactNode;
   /** Extra inline style for the CRT frame (real games size it to fit the viewport). */
   frameStyle?: CSSProperties;
+  /** Extra inline style for the screen (real games set their canvas proportion). */
+  screenStyle?: CSSProperties;
 };
 
-// Below the player's mobile breakpoint (720px, as .av-player in globals.css) the footer wraps
-// into centered lines with room between them instead of overlapping; desktop keeps the prototype.
-const BOTTOM_MOBILE = "max-[720px]:flex-wrap max-[720px]:justify-center max-[720px]:gap-x-3 max-[720px]:gap-y-1.5 max-[720px]:leading-[1.6]";
-const BOTTOM_ITEM_MOBILE = "max-[720px]:whitespace-nowrap";
+// When the CRT itself is narrow (phones, or a tall real game such as Caída on desktop) the footer
+// wraps into centered lines with room between them instead of crowding; wide CRTs keep the
+// prototype layout. It is a container query on .crt, so it follows the CRT width, not the viewport.
+// Class names must stay literal so Tailwind can find them.
+const BOTTOM_NARROW = "@max-[560px]:flex-wrap @max-[560px]:justify-center @max-[560px]:gap-x-3 @max-[560px]:gap-y-1.5 @max-[560px]:leading-[1.6]";
+const BOTTOM_ITEM_NARROW = "@max-[560px]:whitespace-nowrap";
 
 /** CRT frame; shows the fake animated arena unless a real game is passed as children. */
-export function CrtScreen({ title, paused, children, frameStyle }: Props) {
+export function CrtScreen({ title, paused, children, frameStyle, screenStyle }: Props) {
   return (
-    <div className="crt" style={frameStyle}>
-      <div className="crt-screen">
+    <div className="crt @container" style={frameStyle}>
+      <div className="crt-screen" style={screenStyle}>
         {children ?? (
           <div className="game-arena">
             <div className="grid-floor"></div>
@@ -37,10 +41,10 @@ export function CrtScreen({ title, paused, children, frameStyle }: Props) {
           </div>
         )}
       </div>
-      <div className={"crt-bottom " + BOTTOM_MOBILE}>
-        <span className={"led " + BOTTOM_ITEM_MOBILE}>SEÑAL OK</span>
-        <span className={BOTTOM_ITEM_MOBILE}>{title} · CRT-83 · 60 HZ</span>
-        <span className={BOTTOM_ITEM_MOBILE}>CARGA · 1MB</span>
+      <div className={"crt-bottom " + BOTTOM_NARROW}>
+        <span className={"led " + BOTTOM_ITEM_NARROW}>SEÑAL OK</span>
+        <span className={BOTTOM_ITEM_NARROW}>{title} · CRT-83 · 60 HZ</span>
+        <span className={BOTTOM_ITEM_NARROW}>CARGA · 1MB</span>
       </div>
     </div>
   );

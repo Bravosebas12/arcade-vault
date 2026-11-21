@@ -18,10 +18,10 @@ describe("score-storage", () => {
 
   it("appends entries with a timestamp", () => {
     vi.spyOn(Date, "now").mockReturnValue(1000);
-    appendScore({ game: "caida", score: 500, name: "KAI" });
+    appendScore({ game: "falling-blocks", score: 500, name: "KAI" });
     appendScore({ game: "asteroids", score: 20, name: "INVITADO" });
     expect(readScores()).toEqual([
-      { game: "caida", score: 500, name: "KAI", at: 1000 },
+      { game: "falling-blocks", score: 500, name: "KAI", at: 1000 },
       { game: "asteroids", score: 20, name: "INVITADO", at: 1000 },
     ]);
     vi.restoreAllMocks();
@@ -30,7 +30,7 @@ describe("score-storage", () => {
   it("starts over when the stored value is corrupt", () => {
     localStorage.setItem("av_scores", "{oops");
     expect(readScores()).toEqual([]);
-    appendScore({ game: "caida", score: 1, name: "A" });
+    appendScore({ game: "falling-blocks", score: 1, name: "A" });
     expect(readScores()).toHaveLength(1);
   });
 
@@ -49,7 +49,7 @@ describe("score-storage", () => {
         "av_scores",
         JSON.stringify([
           { game: "asteroids", score: 300, name: "A", at: 1 },
-          { game: "caida", score: 9000, name: "B", at: 2 },
+          { game: "falling-blocks", score: 9000, name: "B", at: 2 },
           { game: "asteroids", score: 1200, name: "C", at: 3 },
           { game: "asteroids", score: 800, name: "D", at: 4 },
         ]),

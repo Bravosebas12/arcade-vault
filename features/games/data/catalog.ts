@@ -14,7 +14,7 @@ export const GAMES: readonly Game[] = [
     plays: "12.4K",
   },
   {
-    id: "caida",
+    id: "falling-blocks",
     title: "CAÍDA",
     short: "Encaja las piezas antes de que el techo te aplaste.",
     long: "Piezas geométricas descienden desde la oscuridad. Rótalas, encástralas y limpia líneas para sobrevivir. La velocidad aumenta sin piedad cada 10 líneas.",

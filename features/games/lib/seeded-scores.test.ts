@@ -4,7 +4,7 @@ import { seededScores } from "@/features/games/lib/seeded-scores";
 
 describe("seededScores", () => {
   it("matches the prototype output for the CAÍDA detail seed", () => {
-    // Expected values computed by running references/templates/data.jsx with seed "caida".length * 17 + 3.
+    // Expected values computed by running references/templates/data.jsx with seed "caida".length * 17 + 3 (the prototype id of CAÍDA).
     expect(seededScores(88, 10)).toEqual([
       { rank: 1, name: "ARKADYA", score: 278417, date: "19/12/2026" },
       { rank: 2, name: "MAGENTA88", score: 245157, date: "14/11/2026" },
