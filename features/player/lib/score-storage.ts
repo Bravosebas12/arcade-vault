@@ -11,3 +11,25 @@ export function readScores(): SavedScore[] {
 export function appendScore(entry: Omit<SavedScore, "at">): void {
   writeJson(SCORES_KEY, [...readScores(), { ...entry, at: Date.now() }]);
 }
+
+/** Highest saved score of this browser for a game (first one wins on ties), or null. */
+export function bestLocalScore(gameId: string): SavedScore | null {
+  let best: SavedScore | null = null;
+  for (const entry of readScores()) {
+    if (entry?.game !== gameId || typeof entry.score !== "number") continue;
+    if (best === null || entry.score > best.score) best = entry;
+  }
+  return best;
+}
+
+export const PLAYER_NAME_KEY = "av_player_name";
+
+/** Last name saved from a real game, or null. */
+export function readPlayerName(): string | null {
+  const value = readJson<unknown>(PLAYER_NAME_KEY, null);
+  return typeof value === "string" ? value : null;
+}
+
+export function savePlayerName(name: string): void {
+  writeJson(PLAYER_NAME_KEY, name);
+}
