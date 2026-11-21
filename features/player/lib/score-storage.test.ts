@@ -55,7 +55,7 @@ describe("score-storage", () => {
         ]),
       );
       expect(bestLocalScore("asteroids")).toEqual({ game: "asteroids", score: 1200, name: "C", at: 3 });
-      expect(bestLocalScore("serpentina")).toBeNull();
+      expect(bestLocalScore("unknown-game")).toBeNull();
     });
 
     it("returns null when the stored value is corrupt", () => {

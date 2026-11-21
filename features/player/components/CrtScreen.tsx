@@ -3,8 +3,8 @@ import type { CSSProperties, ReactNode } from "react";
 type Props = {
   title: string;
   paused: boolean;
-  /** A real game; when present it replaces the fake arena. */
-  children?: ReactNode;
+  /** The real game (its canvas). */
+  children: ReactNode;
   /** Extra inline style for the CRT frame (real games size it to fit the viewport). */
   frameStyle?: CSSProperties;
   /** Extra inline style for the screen (real games set their canvas proportion). */
@@ -18,20 +18,12 @@ type Props = {
 const BOTTOM_NARROW = "@max-[560px]:flex-wrap @max-[560px]:justify-center @max-[560px]:gap-x-3 @max-[560px]:gap-y-1.5 @max-[560px]:leading-[1.6]";
 const BOTTOM_ITEM_NARROW = "@max-[560px]:whitespace-nowrap";
 
-/** CRT frame; shows the fake animated arena unless a real game is passed as children. */
+/** CRT frame around a real game, with the pause overlay and the prototype footer. */
 export function CrtScreen({ title, paused, children, frameStyle, screenStyle }: Props) {
   return (
     <div className="crt @container" style={frameStyle}>
       <div className="crt-screen" style={screenStyle}>
-        {children ?? (
-          <div className="game-arena">
-            <div className="grid-floor"></div>
-            <div className="enemy e1"></div>
-            <div className="enemy e2"></div>
-            <div className="enemy e3"></div>
-            <div className="player-ship"></div>
-          </div>
-        )}
+        {children}
         {paused && (
           <div className="crt-content" style={{ background: "rgba(0,0,0,0.6)", zIndex: 5 }}>
             <div>
