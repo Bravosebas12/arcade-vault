@@ -99,7 +99,8 @@ The Playwright MCP server is registered for this project (local scope). Compare 
 ```
 
 - Pass these paths explicitly as `filename` to `browser_take_screenshot` / `browser_evaluate`; the MCP only writes inside the repo, and anything without a filename lands in `.playwright-mcp/` (transient snapshots and console logs, git-ignored).
-- `.playwright-screenshots/` is git-ignored except its `.gitkeep`; captures are local evidence, not committed.
+- `.playwright-screenshots/` is git-ignored except its `.gitkeep`; it is the raw local capture folder.
+- **Review evidence is versioned per spec**: after verifying a spec, look at every capture yourself (not only the scripted assertions), copy the relevant ones to `docs/evidence/spec-NN/<screen>/<viewport>/`, write `docs/evidence/spec-NN/README.md` with a table (capture → what it shows → verdict) and any findings, commit them in the spec branch and link/embed them in the PR description.
 - For parity captures, inject a style that disables animations/transitions, wait for `document.fonts.ready`, and `scrollTo(0, 0)` before shooting, on both pages.
 
 ## Repository notes
