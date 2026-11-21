@@ -1,6 +1,6 @@
 ---
 name: arcade-game-spec
-description: "Trigger: game spec, spec juego, new game, port game, started-games. Write the spec of one playable Arcade Vault game: mechanics, canvas and platform integration."
+description: "Trigger: game spec, spec juego, new game, port game, started-games, leaderboard. Write one spec covering a playable Arcade Vault game and its leaderboard."
 license: Apache-2.0
 metadata:
   author: "Bravosebas12"
@@ -18,7 +18,7 @@ Load when the user wants a spec for ONE playable game, either ported from `refer
 - One game per spec. Spec prose in Spanish; ids, files and identifiers in English; no trademarked names in visible text.
 - The reference source is `references/started-games/`. If the game exists there, every mechanic, constant, control and text in the spec must come from its code. If not, define them in the spec so the game can be written from scratch.
 - The spec must describe the canvas from scratch (sizes, layers, HUD, screens) and the engine as pure state + step functions; never "wrap the original JS".
-- Integration must reuse the existing platform: `ArcadePlayer` and its contract, an own route, `PLAYABLE_GAME_IDS`, and a new migration that adds the `games` row.
+- The spec always covers the game AND its leaderboard as one deliverable. The game part reuses `ArcadePlayer` and its contract, an own route and `PLAYABLE_GAME_IDS`. The leaderboard part defines the new migration with its `games` row (`max_score`, `sort_order`), saving through `submit_score`, the Salón tab, the detail top 10, MEJOR GLOBAL and its acceptance criteria. Never split the leaderboard into another spec.
 
 ## Decision Gates
 
@@ -39,7 +39,7 @@ Load when the user wants a spec for ONE playable game, either ported from `refer
 
 ## Output Contract
 
-Return: spec path, status `Borrador`, source used (`references/started-games/NN-x` or "desde cero"), the decisions taken, any open risks, and the next step `/spec-impl NN-<id>-game` once the user approves it.
+Return: spec path, status `Borrador`, the game + leaderboard scope (`max_score` and `sort_order` chosen), source used (`references/started-games/NN-x` or "desde cero"), the decisions taken, any open risks, and the next step `/spec-impl NN-<id>-game` once the user approves it.
 
 ## References
 

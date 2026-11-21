@@ -20,11 +20,11 @@ Each folder `references/started-games/NN-name/` is a vanilla-JS canvas game: `in
 1. Catalog entry and English id (reuse a simulated game or add a new one), and the Spanish title.
 2. Behaviors to keep versus drop (extra pieces, power-ups, cheats, restart keys).
 3. Colors: the original palette or the neon tokens (`--cyan`, `--magenta`, `--yellow`, `--green`).
-4. `max_score` for the `games` row: a generous upper bound of a real run.
+4. Leaderboard: `max_score` for the `games` row (a generous upper bound of a real run) and its `sort_order` (Salón tab position).
 
 ## Platform facts the spec must state
 
 - Contract: `ArcadeCanvasProps` (`paused`, `runId`, `onStats`, `onGameOver`); stats are `{ score, lives | null, level }`.
 - `ArcadePlayer` already provides the player HUD, the CRT fitted to the viewport, pause (button/P/Escape), FIN, the 1.5 s game-over delay, the modal, the remembered name, and `av_scores` + `submitScore`.
 - Shared helpers in `features/arcade/lib/`: `use-game-loop`, `use-keys`, `palette`, `rng`, `hud-scale`.
-- Leaderboard: a new migration inserts the `games` row; the game then gets its Salón tab, detail top 10 and MEJOR GLOBAL automatically.
+- Leaderboard (always part of the same spec): a new migration inserts the `games` row; the game then gets its Salón tab, detail top 10 and MEJOR GLOBAL automatically. The spec must still list them in its scope and acceptance criteria.
