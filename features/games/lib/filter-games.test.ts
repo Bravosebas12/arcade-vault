@@ -14,7 +14,7 @@ describe("filterGames", () => {
   });
 
   it("filters by title ignoring case", () => {
-    expect(ids(filterGames(GAMES, "caí", "TODOS"))).toEqual(["caida"]);
+    expect(ids(filterGames(GAMES, "caí", "TODOS"))).toEqual(["falling-blocks"]);
     expect(ids(filterGames(GAMES, "ASTER", "TODOS"))).toEqual(["asteroids"]);
   });
 
