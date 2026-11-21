@@ -7,8 +7,17 @@ export function Leaderboard({ rows }: { rows: LeaderboardRow[] }) {
   return (
     <div className="leaderboard">
       <h3>MEJORES PUNTUACIONES</h3>
+      {rows.length === 0 && (
+        <div
+          className="lb-row"
+          style={{ display: "block", textAlign: "center", fontFamily: "var(--pixel)", fontSize: 10, lineHeight: 1.8, color: "var(--yellow)", padding: "24px 16px" }}
+        >
+          SÉ EL PRIMERO EN ENTRAR EN LA SALA DE LA FAMA
+        </div>
+      )}
       {rows.map((r, i) => (
-        <div key={r.name} className={"lb-row" + podiumClass(i)}>
+        // Real leaderboards may repeat a name, so the rank is the key.
+        <div key={r.rank} className={"lb-row" + podiumClass(i)}>
           <div className="rk">#{formatRank(r.rank)}</div>
           <div className="pl">
             {r.name}
