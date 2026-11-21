@@ -1,4 +1,5 @@
 import { connection } from "next/server";
+import { cache } from "react";
 import type { LeaderboardRow } from "@/features/games/model/game";
 import { toGameRecord, toLeaderboardRows } from "@/features/leaderboard/lib/leaderboard-rows";
 import type { GameRecord } from "@/features/leaderboard/model/game-row";
@@ -34,8 +35,10 @@ export async function getLeaderboardGames(): Promise<GameRecord[] | null> {
 /**
  * Top `limit` scores of a game: highest first, oldest first on ties.
  * null → use seededScores. [] → "SÉ EL PRIMERO EN ENTRAR EN LA SALA DE LA FAMA".
+ * Memoized per request with React.cache, so the detail page's leaderboard and "MEJOR GLOBAL"
+ * share one query.
  */
-export async function getLeaderboard(gameId: string, limit: number): Promise<LeaderboardRow[] | null> {
+export const getLeaderboard = cache(async function getLeaderboard(gameId: string, limit: number): Promise<LeaderboardRow[] | null> {
   await connection();
   const supabase = await createClient();
   if (!supabase) return null;
@@ -57,4 +60,4 @@ export async function getLeaderboard(gameId: string, limit: number): Promise<Lea
     logFailure("scores query threw", e instanceof Error ? `${e.name}: ${e.message}` : "UnknownError");
     return null;
   }
-}
+});
