@@ -11,10 +11,10 @@ describe("score-storage", () => {
   it("appends entries with a timestamp", () => {
     vi.spyOn(Date, "now").mockReturnValue(1000);
     appendScore({ game: "caida", score: 500, name: "KAI" });
-    appendScore({ game: "rocas", score: 20, name: "INVITADO" });
+    appendScore({ game: "asteroids", score: 20, name: "INVITADO" });
     expect(readScores()).toEqual([
       { game: "caida", score: 500, name: "KAI", at: 1000 },
-      { game: "rocas", score: 20, name: "INVITADO", at: 1000 },
+      { game: "asteroids", score: 20, name: "INVITADO", at: 1000 },
     ]);
     vi.restoreAllMocks();
   });

@@ -10,12 +10,12 @@ describe("filterGames", () => {
   });
 
   it("filters by category", () => {
-    expect(ids(filterGames(GAMES, "", "SHOOTER"))).toEqual(["invasores", "rocas"]);
+    expect(ids(filterGames(GAMES, "", "SHOOTER"))).toEqual(["invasores", "asteroids"]);
   });
 
   it("filters by title ignoring case", () => {
     expect(ids(filterGames(GAMES, "caí", "TODOS"))).toEqual(["caida"]);
-    expect(ids(filterGames(GAMES, "ROCA", "TODOS"))).toEqual(["rocas"]);
+    expect(ids(filterGames(GAMES, "ASTER", "TODOS"))).toEqual(["asteroids"]);
   });
 
   it("combines query and category", () => {
