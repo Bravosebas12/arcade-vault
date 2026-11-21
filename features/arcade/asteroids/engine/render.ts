@@ -100,9 +100,10 @@ function drawShip(ctx: CanvasRenderingContext2D, ship: Ship, time: number, palet
   ctx.restore();
 }
 
-function drawLifeIcon(ctx: CanvasRenderingContext2D, x: number, y: number, palette: ArcadePalette) {
+function drawLifeIcon(ctx: CanvasRenderingContext2D, x: number, y: number, scale: number, palette: ArcadePalette) {
   ctx.save();
   ctx.translate(x, y);
+  ctx.scale(scale, scale);
   ctx.rotate(-Math.PI / 2);
   ctx.strokeStyle = palette.ink;
   ctx.lineWidth = 1.2;
@@ -117,41 +118,47 @@ function drawLifeIcon(ctx: CanvasRenderingContext2D, x: number, y: number, palet
   ctx.restore();
 }
 
-function drawHud(ctx: CanvasRenderingContext2D, state: AsteroidsState, palette: ArcadePalette) {
+// The HUD and overlay sizes and offsets below are the original ones at scale 1; `s` (hudScale)
+// enlarges them when the canvas is displayed narrower than W, so they stay readable on phones.
+
+function drawHud(ctx: CanvasRenderingContext2D, state: AsteroidsState, s: number, palette: ArcadePalette) {
   // Same GameStats the canvas notifies to React, so both HUDs always match.
   const { score, lives, level } = asteroidsStats(state);
   ctx.fillStyle = palette.ink;
-  ctx.font = `15px ${MONO}`;
+  ctx.font = `${15 * s}px ${MONO}`;
   ctx.textBaseline = "alphabetic";
 
   ctx.textAlign = "left";
-  ctx.fillText(`SCORE  ${score}`, 14, 26);
+  ctx.fillText(`SCORE  ${score}`, 14 * s, 26 * s);
 
   ctx.textAlign = "center";
-  ctx.fillText(`NIVEL ${level}`, W / 2, 26);
+  ctx.fillText(`NIVEL ${level}`, W / 2, 26 * s);
 
-  for (let i = 0; i < (lives ?? 0); i++) drawLifeIcon(ctx, W - 16 - i * 22, 18, palette);
+  for (let i = 0; i < (lives ?? 0); i++) drawLifeIcon(ctx, W - (16 + i * 22) * s, 18 * s, s, palette);
 
   if (state.ship.tripleShot > 0) {
     ctx.textAlign = "left";
     ctx.fillStyle = palette.cyan;
-    ctx.fillText(`3x  ${state.ship.tripleShot.toFixed(1)}s`, 14, 46);
+    ctx.fillText(`3x  ${state.ship.tripleShot.toFixed(1)}s`, 14 * s, 46 * s);
   }
 }
 
-function drawOverlay(ctx: CanvasRenderingContext2D, title: string, sub: string, palette: ArcadePalette) {
+function drawOverlay(ctx: CanvasRenderingContext2D, title: string, sub: string, s: number, palette: ArcadePalette) {
   ctx.textAlign = "center";
   ctx.textBaseline = "alphabetic";
   ctx.fillStyle = palette.ink;
-  ctx.font = `bold 46px ${MONO}`;
-  ctx.fillText(title, W / 2, H / 2 - 18);
-  ctx.font = `18px ${MONO}`;
+  ctx.font = `bold ${46 * s}px ${MONO}`;
+  ctx.fillText(title, W / 2, H / 2 - 18 * s);
+  ctx.font = `${18 * s}px ${MONO}`;
   ctx.fillStyle = palette.inkDim;
-  ctx.fillText(sub, W / 2, H / 2 + 22);
+  ctx.fillText(sub, W / 2, H / 2 + 22 * s);
 }
 
-/** Draws the game, the original HUD and, after the last life, "GAME OVER" / "PUNTAJE: X". */
-export function drawAsteroids(ctx: CanvasRenderingContext2D, state: AsteroidsState, palette: ArcadePalette) {
+/**
+ * Draws the game, the original HUD and, after the last life, "GAME OVER" / "PUNTAJE: X".
+ * `hudScale` (see features/arcade/lib/hud-scale.ts) only enlarges the HUD and overlay texts.
+ */
+export function drawAsteroids(ctx: CanvasRenderingContext2D, state: AsteroidsState, palette: ArcadePalette, hudScale = 1) {
   ctx.fillStyle = palette.bg;
   ctx.fillRect(0, 0, W, H);
 
@@ -161,7 +168,7 @@ export function drawAsteroids(ctx: CanvasRenderingContext2D, state: AsteroidsSta
   state.bullets.forEach((b) => drawBullet(ctx, b, palette));
   drawShip(ctx, state.ship, state.time, palette);
 
-  drawHud(ctx, state, palette);
+  drawHud(ctx, state, hudScale, palette);
 
-  if (state.phase === "gameover") drawOverlay(ctx, "GAME OVER", `PUNTAJE: ${state.score}`, palette);
+  if (state.phase === "gameover") drawOverlay(ctx, "GAME OVER", `PUNTAJE: ${state.score}`, hudScale, palette);
 }

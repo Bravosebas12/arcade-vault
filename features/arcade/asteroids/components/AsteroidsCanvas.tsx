@@ -4,6 +4,7 @@ import { useEffect, useEffectEvent, useRef } from "react";
 import { H, W } from "@/features/arcade/asteroids/engine/constants";
 import { drawAsteroids } from "@/features/arcade/asteroids/engine/render";
 import { asteroidsStats, createAsteroidsState, stepAsteroids, type AsteroidsState } from "@/features/arcade/asteroids/engine/state";
+import { hudScale } from "@/features/arcade/lib/hud-scale";
 import { DEFAULT_ARCADE_PALETTE, readArcadePalette } from "@/features/arcade/lib/palette";
 import { createRng } from "@/features/arcade/lib/rng";
 import { useGameLoop } from "@/features/arcade/lib/use-game-loop";
@@ -26,12 +27,31 @@ export function AsteroidsCanvas({ paused, runId, onStats, onGameOver }: ArcadeCa
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const runRef = useRef<Run | null>(null);
   const paletteRef = useRef(DEFAULT_ARCADE_PALETTE);
+  /** Enlarges the in-canvas HUD when the canvas is displayed narrower than W (phones). */
+  const hudScaleRef = useRef(1);
   const keys = useKeys(!paused);
 
   const paint = (state: AsteroidsState) => {
     const ctx = canvasRef.current?.getContext("2d");
-    if (ctx) drawAsteroids(ctx, state, paletteRef.current);
+    if (ctx) drawAsteroids(ctx, state, paletteRef.current, hudScaleRef.current);
   };
+
+  // Follows the displayed width; repaints so a paused or finished game also updates its HUD.
+  const onResize = useEffectEvent((displayedWidth: number) => {
+    const scale = hudScale(W, displayedWidth);
+    if (scale === hudScaleRef.current) return;
+    hudScaleRef.current = scale;
+    if (runRef.current) paint(runRef.current.state);
+  });
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    onResize(canvas.getBoundingClientRect().width);
+    const observer = new ResizeObserver(([entry]) => onResize(entry.contentRect.width));
+    observer.observe(canvas);
+    return () => observer.disconnect();
+  }, []);
 
   // The CSS tokens are only reliable after mounting.
   useEffect(() => {
