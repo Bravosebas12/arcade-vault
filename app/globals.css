@@ -460,11 +460,22 @@ a { color: inherit; text-decoration: none; }
 .cover-snake::after {
   content: "";
   position: absolute; inset: 0;
-  background-image:
-    radial-gradient(circle at 70% 50%, var(--magenta) 0 6px, transparent 7px),
-    linear-gradient(90deg, var(--green) 0 40px, transparent 40px) 20% 50% / 200px 12px no-repeat,
-    linear-gradient(90deg, var(--green) 0 12px, transparent 12px) calc(20% + 40px) calc(50% - 12px)/12px 12px no-repeat,
-    linear-gradient(90deg, var(--green) 0 12px, transparent 12px) calc(20% + 28px) calc(50% - 12px)/12px 12px no-repeat;
+  /* Deviation from the prototype: its rule used background-image, which does not accept per-layer
+     position/size/repeat, so the whole declaration was dropped and the cover showed no snake (and
+     its percentage positions left the pieces apart). Redrawn like the game: 14px segments on a
+     16px grid around the center (same-size layers keep calc(50% ± n) offsets aligned), a light head
+     facing a red fruit. */
+  background:
+    radial-gradient(circle, #ff2d6f 0 7px, transparent 8px) calc(50% + 64px) calc(50% - 16px) / 16px 16px no-repeat,
+    linear-gradient(#b6ffd9, #b6ffd9) calc(50% + 16px) calc(50% - 16px) / 14px 14px no-repeat,
+    linear-gradient(var(--green), var(--green)) calc(50% + 0px) calc(50% - 16px) / 14px 14px no-repeat,
+    linear-gradient(var(--green), var(--green)) calc(50% - 16px) calc(50% - 16px) / 14px 14px no-repeat,
+    linear-gradient(var(--green), var(--green)) calc(50% - 32px) calc(50% - 16px) / 14px 14px no-repeat,
+    linear-gradient(var(--green), var(--green)) calc(50% - 32px) calc(50% + 0px) / 14px 14px no-repeat,
+    linear-gradient(var(--green), var(--green)) calc(50% - 32px) calc(50% + 16px) / 14px 14px no-repeat,
+    linear-gradient(var(--green), var(--green)) calc(50% - 48px) calc(50% + 16px) / 14px 14px no-repeat,
+    linear-gradient(var(--green), var(--green)) calc(50% - 64px) calc(50% + 16px) / 14px 14px no-repeat,
+    linear-gradient(var(--green), var(--green)) calc(50% - 80px) calc(50% + 16px) / 14px 14px no-repeat;
   filter: drop-shadow(0 0 6px rgba(0,255,136,0.6));
 }
 

@@ -312,7 +312,7 @@ Implementado y verificado el 2026-11-22 con Playwright contra `next start` y Sup
   - el Salón tiene 4 pestañas en orden; el Detalle, la Biblioteca y MEJOR GLOBAL muestran 150.
 - **Tabla vacía:** tras borrar las filas de prueba, el Salón y el Detalle de SERPENTINA muestran "SÉ EL PRIMERO EN ENTRAR EN LA SALA DE LA FAMA" y MEJOR GLOBAL "—".
 - **Cubierto por los tests del motor:** el cambio a los mapas 3, 4 y 5 y el choque con el propio cuerpo. El cambio a mapas posteriores al 2 y el choque con el propio cuerpo están cubiertos por los tests del motor.
-- **Hallazgo previo, no corregido:** la portada `cover-snake` se ve como un degradado vacío. Su `::after` pone posiciones y tamaños dentro de `background-image`, lo que invalida la declaración. Viene así del CSS del prototipo, que se porta sin cambios.
+- **Hallazgo previo, corregido después (PR #23):** la portada `cover-snake` se veía como un degradado vacío. Su `::after` pone posiciones y tamaños dentro de `background-image`, lo que invalida la declaración. Viene así del CSS del prototipo, que se porta sin cambios.
 - **Datos de prueba:** las filas `QA_SNAKE` (0, 120 y 150) se borraron al terminar.
 
 ---
