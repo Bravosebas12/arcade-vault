@@ -5,8 +5,8 @@ import { filterGames } from "@/features/games/lib/filter-games";
 const ids = (games: readonly { id: string }[]) => games.map((g) => g.id);
 
 describe("filterGames", () => {
-  it("lists the three real games in catalog order", () => {
-    expect(ids(GAMES)).toEqual(["brick-breaker", "falling-blocks", "asteroids"]);
+  it("lists the four real games in catalog order", () => {
+    expect(ids(GAMES)).toEqual(["brick-breaker", "falling-blocks", "asteroids", "snake"]);
   });
 
   it("returns every game for TODOS and an empty query", () => {
@@ -16,13 +16,14 @@ describe("filterGames", () => {
   it("filters by category", () => {
     expect(ids(filterGames(GAMES, "", "SHOOTER"))).toEqual(["asteroids"]);
     expect(ids(filterGames(GAMES, "", "PUZZLE"))).toEqual(["falling-blocks"]);
-    expect(ids(filterGames(GAMES, "", "ARCADE"))).toEqual(["brick-breaker"]);
+    expect(ids(filterGames(GAMES, "", "ARCADE"))).toEqual(["brick-breaker", "snake"]);
   });
 
   it("filters by title ignoring case", () => {
     expect(ids(filterGames(GAMES, "fall", "TODOS"))).toEqual(["falling-blocks"]);
     expect(ids(filterGames(GAMES, "ASTER", "TODOS"))).toEqual(["asteroids"]);
     expect(ids(filterGames(GAMES, "brick", "TODOS"))).toEqual(["brick-breaker"]);
+    expect(ids(filterGames(GAMES, "serp", "TODOS"))).toEqual(["snake"]);
   });
 
   it("combines query and category", () => {
