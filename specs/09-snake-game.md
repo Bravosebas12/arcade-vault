@@ -1,6 +1,6 @@
 # SPEC 09 — Juego y leaderboard: Serpentina
 
-> **Estado:** Borrador
+> **Estado:** Implementado
 > **Depende de:** SPEC 05, SPEC 06
 > **Fecha:** 2026-11-22
 > **Objetivo:** Crear el juego `snake` ("SERPENTINA") a partir del prototipo `references/started-games/05-snake/`, aislado en `features/arcade/snake/` y servido por su ruta `/juegos/snake/jugar`, con su canvas, sus frutas pixel art, sus 5 mapas, sus sonidos y su HUD, y registrado en el leaderboard de Supabase (Salón, Detalle y MEJOR GLOBAL).
@@ -89,12 +89,12 @@ export const NORMAL_FRUITS: readonly FruitType[] = ["apple", "cherry", "grape", 
 
 Mapas en `engine/maps.ts`, copiados de `maps.js`. Cada mapa es `{ name, walls: { x, y, w, h }[], spawn: { x, y, dir } }`, en celdas, y el borde se añade siempre:
 
-| # | Nombre | Muros interiores | Salida |
-| --- | --- | --- | --- |
-| 1 | ARENA | ninguno | (5, 10) → |
-| 2 | PILARES | 4 bloques de 2×2 en (6,4), (20,4), (6,14) y (20,14) | (5, 10) → |
-| 3 | PASILLOS | 2 barras de 18×1 en las filas 6 y 13, desde x = 5 | (5, 10) → |
-| 4 | CRUZ | brazos verticales de 2×5 en (13,2) y (13,13) y horizontales de 8×2 en (4,9) y (16,9) | (5, 8) → |
+| # | Nombre    | Muros interiores                                                                                    | Salida     |
+| - | --------- | --------------------------------------------------------------------------------------------------- | ---------- |
+| 1 | ARENA     | ninguno                                                                                             | (5, 10) → |
+| 2 | PILARES   | 4 bloques de 2×2 en (6,4), (20,4), (6,14) y (20,14)                                                | (5, 10) → |
+| 3 | PASILLOS  | 2 barras de 18×1 en las filas 6 y 13, desde x = 5                                                  | (5, 10) → |
+| 4 | CRUZ      | brazos verticales de 2×5 en (13,2) y (13,13) y horizontales de 8×2 en (4,9) y (16,9)              | (5, 8) →  |
 | 5 | LABERINTO | 4 columnas de 1×7 con hueco en las filas 8–11 (x = 9 y 18) y 6 tramos de 4×1 en las filas 5 y 14 | (4, 10) → |
 
 Cada salida tiene al menos 8 celdas libres por delante.
@@ -237,26 +237,26 @@ docs/evidence/spec-09/                         # capturas revisadas + README
 
 **Juego:**
 
-- [ ] `npm run lint`, `npx tsc --noEmit`, `npm test` y `npm run build` terminan sin errores, y el build lista `/juegos/snake/jugar`.
-- [ ] `features/arcade/snake/` no importa nada de otro juego.
-- [ ] Al entrar se ve "MAPA 1 · ARENA" y, 1,5 s después, la serpiente avanza sola hacia la derecha.
-- [ ] Las flechas y WASD giran; la marcha atrás no hace nada y la página no se desplaza.
-- [ ] Comer una fruta suma 10 × nivel, la serpiente crece, el contador sube ("n/10") y suena el pitido. El HUD del canvas coincide con el del Reproductor (puntuación, vidas y nivel).
-- [ ] La piña dorada aparece al comer la 5.ª fruta, parpadea antes de desaparecer a los 5 s y suma 50 × nivel.
-- [ ] La 10.ª fruta muestra "MAPA 2 · PILARES" y carga sus muros, y la serpiente va más rápido.
-- [ ] Chocar con un muro o con el cuerpo resta una vida y la serpiente parpadea y reaparece. Con la última vida se ve "GAME OVER" en el canvas y, 1,5 s después, el modal. FIN lo abre al instante.
-- [ ] PAUSA, P y Escape congelan el juego y el sonido. Al reanudar la serpiente no salta.
-- [ ] JUGAR DE NUEVO empieza en el mapa 1 con 3 vidas y puntuación 0.
-- [ ] Hay un solo bucle de animación, también al salir y volver; el canvas cabe a 1440×900 y 1280×720 y se lee a 390 px.
-- [ ] La consola no muestra errores y ningún recurso ni texto viene del Snake de Google ni de otra marca.
+- [x] `npm run lint`, `npx tsc --noEmit`, `npm test` y `npm run build` terminan sin errores, y el build lista `/juegos/snake/jugar`.
+- [x] `features/arcade/snake/` no importa nada de otro juego.
+- [x] Al entrar se ve "MAPA 1 · ARENA" y, 1,5 s después, la serpiente avanza sola hacia la derecha.
+- [x] Las flechas y WASD giran; la marcha atrás no hace nada y la página no se desplaza.
+- [x] Comer una fruta suma 10 × nivel, la serpiente crece, el contador sube ("n/10") y suena el pitido. El HUD del canvas coincide con el del Reproductor (puntuación, vidas y nivel).
+- [x] La piña dorada aparece al comer la 5.ª fruta, parpadea antes de desaparecer a los 5 s y suma 50 × nivel.
+- [x] La 10.ª fruta muestra "MAPA 2 · PILARES" y carga sus muros, y la serpiente va más rápido.
+- [x] Chocar con un muro o con el cuerpo resta una vida y la serpiente parpadea y reaparece. Con la última vida se ve "GAME OVER" en el canvas y, 1,5 s después, el modal. FIN lo abre al instante.
+- [x] PAUSA, P y Escape congelan el juego y el sonido. Al reanudar la serpiente no salta.
+- [x] JUGAR DE NUEVO empieza en el mapa 1 con 3 vidas y puntuación 0.
+- [x] Hay un solo bucle de animación, también al salir y volver; el canvas cabe a 1440×900 y 1280×720 y se lee a 390 px.
+- [x] La consola no muestra errores y ningún recurso ni texto viene del Snake de Google ni de otra marca.
 
 **Leaderboard:**
 
-- [ ] `games` tiene la fila `snake` con los textos de `catalog.ts`, `max_score` 1000000 y `sort_order` 4.
-- [ ] GUARDAR crea en `scores` una fila con `game_id` `snake`, el nombre y la puntuación exactos y `user_id` `null`. `submit_score` rechaza 1000010 y un segundo envío antes de 10 s.
-- [ ] El Salón muestra las pestañas ASTEROIDES, FALLING BLOCKS, BRICK BREAKER y SERPENTINA, en ese orden. El Detalle muestra el top 10 y MEJOR GLOBAL igual al #01, y la tarjeta de la Biblioteca muestra el mismo valor.
-- [ ] Sin puntuaciones, el Salón y el Detalle muestran "SÉ EL PRIMERO EN ENTRAR EN LA SALA DE LA FAMA".
-- [ ] Los asesores de Supabase no muestran avisos nuevos, aparte del de `submit_score`, que es intencionado.
+- [x] `games` tiene la fila `snake` con los textos de `catalog.ts`, `max_score` 1000000 y `sort_order` 4.
+- [x] GUARDAR crea en `scores` una fila con `game_id` `snake`, el nombre y la puntuación exactos y `user_id` `null`. `submit_score` rechaza 1000010 y un segundo envío antes de 10 s.
+- [x] El Salón muestra las pestañas ASTEROIDES, FALLING BLOCKS, BRICK BREAKER y SERPENTINA, en ese orden. El Detalle muestra el top 10 y MEJOR GLOBAL igual al #01, y la tarjeta de la Biblioteca muestra el mismo valor.
+- [x] Sin puntuaciones, el Salón y el Detalle muestran "SÉ EL PRIMERO EN ENTRAR EN LA SALA DE LA FAMA".
+- [x] Los asesores de Supabase no muestran avisos nuevos, aparte del de `submit_score`, que es intencionado.
 
 ---
 
@@ -279,14 +279,41 @@ docs/evidence/spec-09/                         # capturas revisadas + README
 
 ## Riesgos
 
-| Riesgo | Mitigación |
-| --- | --- |
-| A velocidad alta, dos giros rápidos en el mismo fotograma se pierden o provocan una marcha atrás. | Cola de 2 giros, validada contra el último giro encolado; hay tests de giros rápidos. |
-| Con `dt` grande (pestaña en segundo plano) la serpiente salta varias celdas y atraviesa un muro. | `dt` limitado a 0,05 s y avance celda a celda dentro del bucle `while`, comprobando el choque en cada paso. |
-| Una serpiente muy larga no deja celdas libres para la fruta. | Con 10 frutas por mapa el largo máximo es 4 + 11 = 15 de 468+ celdas libres; si `free` estuviera vacío, el motor no coloca la fruta (test). |
-| El navegador bloquea WebAudio antes de la primera interacción. | El `AudioContext` se crea en la primera tecla; antes no hay sonidos que perder. |
-| `max_score` arbitrario deja pasar puntuaciones infladas por debajo del techo. | Es la misma defensa que en los otros juegos; el antitrampas fuerte queda fuera de alcance. |
-| `image-rendering` o el escalado del canvas difuminan los sprites de 12 px. | `imageSmoothingEnabled = false` al dibujar las frutas; un criterio revisa las capturas a 1440 y 390 px. |
+| Riesgo                                                                                              | Mitigación                                                                                                                                     |
+| --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| A velocidad alta, dos giros rápidos en el mismo fotograma se pierden o provocan una marcha atrás. | Cola de 2 giros, validada contra el último giro encolado; hay tests de giros rápidos.                                                         |
+| Con `dt` grande (pestaña en segundo plano) la serpiente salta varias celdas y atraviesa un muro. | `dt` limitado a 0,05 s y avance celda a celda dentro del bucle `while`, comprobando el choque en cada paso.                                 |
+| Una serpiente muy larga no deja celdas libres para la fruta.                                        | Con 10 frutas por mapa el largo máximo es 4 + 11 = 15 de 468+ celdas libres; si `free` estuviera vacío, el motor no coloca la fruta (test). |
+| El navegador bloquea WebAudio antes de la primera interacción.                                     | El `AudioContext` se crea en la primera tecla; antes no hay sonidos que perder.                                                               |
+| `max_score` arbitrario deja pasar puntuaciones infladas por debajo del techo.                     | Es la misma defensa que en los otros juegos; el antitrampas fuerte queda fuera de alcance.                                                      |
+| `image-rendering` o el escalado del canvas difuminan los sprites de 12 px.                        | `imageSmoothingEnabled = false` al dibujar las frutas; un criterio revisa las capturas a 1440 y 390 px.                                       |
+
+---
+
+## Notas de implementación
+
+Implementado y verificado el 2026-11-22 con Playwright contra `next start` y Supabase: 23 de 23 comprobaciones. Las evidencias revisadas están en [`docs/evidence/spec-09/`](../docs/evidence/spec-09/README.md).
+
+- **Desviaciones:**
+  - `wallsOf`, `mapFor` y `cellKey` viven en `engine/maps.ts`, no en `state.ts`. `state.ts` exporta además `speedFor` y `randomFreeCell` para los tests.
+  - `fruit` puede ser `null` si no quedara ninguna celda libre (riesgo de la tabla); en la práctica nunca ocurre.
+  - El HUD del canvas se coloca midiendo los textos: puntos a la izquierda, vidas a la derecha, frutas antes de las vidas y el mapa en el hueco. Cuando no cabe, el mapa se acorta a "MAPA N" (a 390 px). Con posiciones fijas se solapaba en móvil.
+  - En pausa el canvas solo oscurece el tablero, sin texto propio: "EN PAUSA" lo muestra la CRT. El contenedor también pausa durante la espera del fin, así que en `gameover` no se oscurece y "GAME OVER" se ve brillante.
+  - El canvas crea su `rng` con semilla en cada partida (`createRng(Date.now() + runId)`), como Asteroides, y pinta el atlas de frutas en el primer fotograma.
+  - `npx supabase migration new` espera el SQL por la entrada estándar cuando no hay TTY y deja el archivo vacío; la migración se escribió directamente en el archivo creado.
+- **Verificado:**
+  - el cartel "MAPA 1 · ARENA" congela el tablero 1,5 s y después la serpiente avanza sola
+  - las flechas y WASD giran sin desplazar la página; P y Escape pausan y reanudan
+  - un piloto automático (lee el canvas por celdas y busca el camino a la fruta): la primera fruta suma 10, la piña dorada aparece y suma 50, y la 10.ª fruta carga "MAPA 2 · PILARES"
+  - un choque resta una vida, la última muestra "GAME OVER" y después el modal con 150
+  - GUARDAR crea la fila exacta; `submit_score` rechaza un segundo envío antes de 10 s y 1000010
+  - JUGAR DE NUEVO vuelve a 0 / 3 vidas / nivel 01, y FIN abre el modal al instante
+  - un solo bucle (60 rAF/s) también al salir y volver; el canvas cabe a 1440×900 y 1280×720 y se lee a 390 px; sin errores de consola
+  - el Salón tiene 4 pestañas en orden; el Detalle, la Biblioteca y MEJOR GLOBAL muestran 150.
+- **Tabla vacía:** tras borrar las filas de prueba, el Salón y el Detalle de SERPENTINA muestran "SÉ EL PRIMERO EN ENTRAR EN LA SALA DE LA FAMA" y MEJOR GLOBAL "—".
+- **Cubierto por los tests del motor:** el cambio a los mapas 3, 4 y 5 y el choque con el propio cuerpo. El cambio a mapas posteriores al 2 y el choque con el propio cuerpo están cubiertos por los tests del motor.
+- **Hallazgo previo, no corregido:** la portada `cover-snake` se ve como un degradado vacío. Su `::after` pone posiciones y tamaños dentro de `background-image`, lo que invalida la declaración. Viene así del CSS del prototipo, que se porta sin cambios.
+- **Datos de prueba:** las filas `QA_SNAKE` (0, 120 y 150) se borraron al terminar.
 
 ---
 
