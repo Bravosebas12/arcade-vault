@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Serpentina</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a0f; color: #8a8fb5; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; font-family: "Press Start 2P", monospace; padding: 16px; }
+    canvas#game { display: block; max-width: 100%; border: 2px solid rgba(0, 245, 255, 0.35); box-shadow: 0 0 24px rgba(0, 245, 255, 0.25), inset 0 0 40px rgba(0, 0, 0, 0.6); image-rendering: pixelated; }
+    .gallery { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; font-size: 8px; letter-spacing: 0.1em; }
+    .gallery figure { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .gallery canvas { image-rendering: pixelated; width: 36px; height: 36px; }
+    .gallery .bonus { color: #ffcf3a; }
+  </style>
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div class="gallery" id="gallery"></div>
+  <script src="sprites.js"></script>
+  <script src="maps.js"></script>
+  <script src="game.js"></script>
+  <script>
+    // Fruit gallery: the atlas crops, shown under the board with their in-game names.
+    const LABELS = { apple: "MANZANA", cherry: "CEREZA", grape: "UVA", lemon: "LIMÓN", watermelon: "SANDÍA", strawberry: "FRESA", pineapple: "PIÑA BONUS" };
+    const gallery = document.getElementById("gallery");
+    for (const [name, f] of Object.entries(window.SPRITE_ATLAS.fruits)) {
+      const fig = document.createElement("figure");
+      const c = document.createElement("canvas");
+      c.width = f.w; c.height = f.h;
+      c.getContext("2d").drawImage(window.SPRITE_ATLAS.image, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h);
+      const cap = document.createElement("figcaption");
+      cap.textContent = LABELS[name] || name;
+      if (name === "pineapple") cap.className = "bonus";
+      fig.append(c, cap);
+      gallery.append(fig);
+    }
+  </script>
+</body>
+</html>
