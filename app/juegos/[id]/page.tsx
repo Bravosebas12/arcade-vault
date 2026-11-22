@@ -1,8 +1,7 @@
 import { Suspense } from "react";
 import { PLAYABLE_GAME_IDS } from "@/features/arcade/playable";
-import { GameBestScore, GameLeaderboard, SeededLeaderboard } from "@/features/game-detail/components/GameLeaderboard";
+import { BestScoreSlot, GameLeaderboard, SeededLeaderboard } from "@/features/game-detail/components/GameLeaderboard";
 import { GameDetailScreen } from "@/features/game-detail/components/GameDetailScreen";
-import { NO_BEST_SCORE } from "@/features/game-detail/lib/best-global";
 import { allGameStaticParams, resolveGame } from "@/features/games/lib/game-params";
 
 export const generateStaticParams = allGameStaticParams;
@@ -18,12 +17,8 @@ export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]
   return (
     <GameDetailScreen
       game={game}
-      best={
-        // "—" while streaming, never the catalog figure, which only stands in when Supabase is unavailable.
-        <Suspense fallback={NO_BEST_SCORE}>
-          <GameBestScore gameId={game.id} catalogBest={game.best} />
-        </Suspense>
-      }
+      // "—" while streaming, never the catalog figure, which only stands in when Supabase is unavailable.
+      best={<BestScoreSlot game={game} />}
       leaderboard={
         <Suspense fallback={<SeededLeaderboard gameId={game.id} />}>
           <GameLeaderboard gameId={game.id} />

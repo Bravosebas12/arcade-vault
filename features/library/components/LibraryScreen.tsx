@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import { GAMES } from "@/features/games/data/catalog";
 import { filterGames } from "@/features/games/lib/filter-games";
 import { visibleCategories } from "@/features/games/lib/visible-categories";
@@ -13,7 +13,12 @@ import { Hero } from "@/features/library/components/Hero";
 // Only categories with at least one game get a chip (plus TODOS), so no chip leads to an empty grid.
 const CATEGORIES = visibleCategories(GAMES);
 
-export function LibraryScreen() {
+type Props = {
+  /** Server-rendered "MEJOR PUNTUACIÓN" per game id; a card without one shows the catalog figure. */
+  bestScores?: Record<string, ReactNode>;
+};
+
+export function LibraryScreen({ bestScores = {} }: Props) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<CategoryFilter>("TODOS");
@@ -25,7 +30,7 @@ export function LibraryScreen() {
       <Filters query={query} category={category} categories={CATEGORIES} onQueryChange={setQuery} onCategoryChange={setCategory} />
       <div className="av-grid">
         {games.map((g) => (
-          <GameCard key={g.id} game={g} onSelect={(game) => router.push(`/juegos/${game.id}`)} />
+          <GameCard key={g.id} game={g} best={bestScores[g.id]} onSelect={(game) => router.push(`/juegos/${game.id}`)} />
         ))}
         {games.length === 0 && (
           <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: 80, color: "var(--ink-faint)" }}>
