@@ -35,6 +35,18 @@ export const GAMES: readonly Game[] = [
     best: 41200,
     plays: "15.6K",
   },
+  {
+    // SPEC 09: prototype "SERPENTINA" entry; the long text now describes the fruits and maps.
+    id: "snake",
+    title: "SERPENTINA",
+    short: "Crece sin morder tu propia cola.",
+    long: "Una serpiente de luz recorre cinco mapas buscando frutas de neón. Cada bocado la alarga y cada mapa la hace más veloz. Un movimiento en falso y se devora a sí misma.",
+    cat: "ARCADE",
+    cover: "cover-snake",
+    color: "green",
+    best: 7820,
+    plays: "9.1K",
+  },
 ];
 
 export const CATS: readonly CategoryFilter[] = ["TODOS", "ARCADE", "PUZZLE", "SHOOTER", "VERSUS"];
