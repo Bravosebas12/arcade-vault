@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { type ReactNode, useRef } from "react";
 import { GAMES } from "@/features/games/data/catalog";
-import { ActivitySection } from "@/features/home/components/ActivitySection";
 import { FeatureIcon } from "@/features/home/components/FeatureIcon";
 import { FloatingSilhouettes } from "@/features/home/components/FloatingSilhouettes";
 import { MiniCard } from "@/features/home/components/MiniCard";
@@ -11,7 +10,12 @@ import { PricingSection } from "@/features/home/components/PricingSection";
 import { FEATURES, HOME_STATS } from "@/features/home/data/home-content";
 import { useReveal } from "@/shared/lib/use-reveal";
 
-export function HomeScreen() {
+type Props = {
+  /** "ACTIVIDAD EN VIVO" section, rendered on the server (it reads Supabase). */
+  activity: ReactNode;
+};
+
+export function HomeScreen({ activity }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   useReveal(rootRef);
 
@@ -90,7 +94,7 @@ export function HomeScreen() {
         </div>
       </section>
 
-      <ActivitySection />
+      {activity}
 
       <PricingSection />
 

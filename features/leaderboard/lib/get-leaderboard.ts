@@ -1,7 +1,7 @@
 import { connection } from "next/server";
 import { cache } from "react";
 import type { LeaderboardRow } from "@/features/games/model/game";
-import { toGameRecord, toLeaderboardRows } from "@/features/leaderboard/lib/leaderboard-rows";
+import { type ScoreRow, toGameRecord, toLeaderboardRows } from "@/features/leaderboard/lib/leaderboard-rows";
 import type { GameRecord } from "@/features/leaderboard/model/game-row";
 import { createClient } from "@/shared/lib/supabase/server";
 
@@ -61,3 +61,33 @@ export const getLeaderboard = cache(async function getLeaderboard(gameId: string
     return null;
   }
 });
+
+/** Ordering of a cross-game score read: newest first, or highest first (oldest first on ties). */
+type ScoreOrder = "recent" | "top";
+
+/**
+ * Raw score rows across every game for the Home activity: the `limit` newest ("recent") or highest
+ * ("top"). null → Supabase unavailable or error.
+ */
+export async function getScores(order: ScoreOrder, limit: number): Promise<ScoreRow[] | null> {
+  await connection();
+  const supabase = await createClient();
+  if (!supabase) return null;
+
+  try {
+    const query = supabase.from("scores").select(SCORE_COLUMNS);
+    const sorted =
+      order === "recent"
+        ? query.order("created_at", { ascending: false })
+        : query.order("score", { ascending: false }).order("created_at", { ascending: true });
+    const { data, error } = await sorted.limit(limit);
+    if (error) {
+      logFailure(`${order} scores query failed`, `${error.code}: ${error.message}`);
+      return null;
+    }
+    return data;
+  } catch (e) {
+    logFailure(`${order} scores query threw`, e instanceof Error ? `${e.name}: ${e.message}` : "UnknownError");
+    return null;
+  }
+}
