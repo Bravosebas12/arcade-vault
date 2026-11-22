@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { type ReactNode, useRef } from "react";
 import type { Game } from "@/features/games/model/game";
 import { formatScore } from "@/shared/lib/format";
 
@@ -8,10 +8,12 @@ const buttonColor = (color: Game["color"]) => (color === "magenta" ? "magenta" :
 
 type Props = {
   game: Game;
+  /** "MEJOR PUNTUACIÓN" slot (real score streamed by the server); defaults to the catalog figure. */
+  best?: ReactNode;
   onSelect: (game: Game) => void;
 };
 
-export function GameCard({ game, onSelect }: Props) {
+export function GameCard({ game, best, onSelect }: Props) {
   const tiltRef = useRef<HTMLDivElement>(null);
 
   // Tilt follows the cursor by writing the transform directly, as in the prototype.
@@ -39,7 +41,7 @@ export function GameCard({ game, onSelect }: Props) {
         <div className="row">
           <div className="score-badge">
             <span>MEJOR PUNTUACIÓN</span>
-            <b>{formatScore(game.best)}</b>
+            <b>{best ?? formatScore(game.best)}</b>
           </div>
           <button
             className={"btn " + buttonColor(game.color)}
