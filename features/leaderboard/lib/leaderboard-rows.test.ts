@@ -41,7 +41,7 @@ describe("toGameRecord", () => {
   it("maps the games columns to the catalog field names", () => {
     const row: GameRow = {
       id: "asteroids",
-      title: "ASTEROIDES",
+      title: "METEOR STORM",
       short_description: "Short text",
       long_description: "Long text",
       category: "SHOOTER",
@@ -53,7 +53,7 @@ describe("toGameRecord", () => {
     };
     expect(toGameRecord(row)).toEqual({
       id: "asteroids",
-      title: "ASTEROIDES",
+      title: "METEOR STORM",
       short: "Short text",
       long: "Long text",
       cat: "SHOOTER",

@@ -28,14 +28,14 @@ describe("timeAgo", () => {
 
 describe("toRecentScores", () => {
   const games = [
-    { id: "asteroids", title: "ASTEROIDES", color: "yellow" as const },
+    { id: "asteroids", title: "METEOR STORM", color: "yellow" as const },
     { id: "falling-blocks", title: "FALLING BLOCKS", color: "magenta" as const },
   ];
 
   it("keeps the received order and takes title and color from the game", () => {
     expect(toRecentScores([row(2, "falling-blocks", "QA", 98), row(1, "asteroids", "KAI", 20, "2026-11-21T09:00:00Z")], games, NOW)).toEqual([
       { player: "QA", game: "FALLING BLOCKS", score: 98, ago: "hace 2 min", color: "magenta" },
-      { player: "KAI", game: "ASTEROIDES", score: 20, ago: "hace 3 h", color: "yellow" },
+      { player: "KAI", game: "METEOR STORM", score: 20, ago: "hace 3 h", color: "yellow" },
     ]);
   });
 

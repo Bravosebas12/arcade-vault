@@ -1,6 +1,6 @@
 # Arcade Vault
 
-Portal de juegos arcade retro con estética neón/CRT, construido con Next.js 16. Incluye la portada, la biblioteca de juegos, el detalle, los juegos reales (Asteroides, Falling Blocks, Brick Breaker y Serpentina; el catálogo solo muestra juegos implementados), el acceso, el Salón de la Fama con rankings reales en [Supabase](https://supabase.com) y la página Acerca de con un formulario de contacto que envía correos reales con [Resend](https://resend.com).
+Portal de juegos arcade retro con estética neón/CRT, construido con Next.js 16. Incluye la portada, la biblioteca de juegos, el detalle, los juegos reales (Meteor Storm, Falling Blocks, Brick Breaker y Neon Snake; el catálogo solo muestra juegos implementados), el acceso, el Salón de la Fama con rankings reales en [Supabase](https://supabase.com) y la página Acerca de con un formulario de contacto que envía correos reales con [Resend](https://resend.com).
 
 ## Inicio rápido
 
@@ -104,10 +104,10 @@ Antes de abrir un PR, deben pasar `npm run lint`, `npx tsc --noEmit`, `npm test`
 | `/` | Home (portada) |
 | `/biblioteca` | Biblioteca de juegos con búsqueda y filtro |
 | `/juegos/[id]` | Detalle de un juego |
-| `/juegos/asteroids/jugar` | Asteroides |
+| `/juegos/asteroids/jugar` | Meteor Storm |
 | `/juegos/falling-blocks/jugar` | Falling Blocks |
 | `/juegos/brick-breaker/jugar` | Brick Breaker |
-| `/juegos/snake/jugar` | Serpentina |
+| `/juegos/snake/jugar` | Neon Snake |
 | `/acceso` | Iniciar sesión / crear cuenta (simulado) |
 | `/salon` | Salón de la Fama (ranking real por juego real) |
 | `/acerca` | Acerca de y formulario de contacto |
