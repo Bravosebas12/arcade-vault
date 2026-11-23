@@ -12,7 +12,7 @@ export type RecentScore = { player: string; game: string; score: number; ago: st
 export type TopPlayer = { rank: number; player: string; score: number };
 
 export const FEATURES: readonly Feature[] = [
-  { icon: "GAMEPAD", title: "JUEGOS CLÁSICOS", desc: "Brick Breaker, Falling Blocks y Asteroides. Los clásicos del arcade reinventados con luz de neón, en un solo lugar.", color: "cyan" },
+  { icon: "GAMEPAD", title: "JUEGOS CLÁSICOS", desc: "Brick Breaker, Falling Blocks, Meteor Storm y Neon Snake. Los clásicos del arcade reinventados con luz de neón, en un solo lugar.", color: "cyan" },
   { icon: "FREE", title: "100% GRATIS", desc: "Sin suscripciones, sin pagos ocultos. Todos los juegos disponibles de forma gratuita.", color: "yellow" },
   { icon: "TROPHY", title: "LADDER BOARDS", desc: "Compite con jugadores de todo el mundo. Escala el ranking y demuestra quién es el mejor.", color: "magenta" },
   { icon: "ROCKET", title: "SIEMPRE CRECIENDO", desc: "Agregamos nuevos juegos constantemente. Vuelve seguido, siempre habrá algo nuevo que jugar.", color: "green" },

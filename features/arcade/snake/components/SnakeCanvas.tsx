@@ -57,7 +57,7 @@ function playBeep(actx: AudioContext, [freq, dur, type = "square", vol = 0.05, s
 }
 
 /**
- * Serpentina canvas: owns the game state, loop, keyboard and WebAudio beeps; obeys the container
+ * Neon Snake canvas: owns the game state, loop, keyboard and WebAudio beeps; obeys the container
  * through ArcadeCanvasProps. P and Escape belong to the container's pause.
  */
 export function SnakeCanvas({ paused, runId, onStats, onGameOver }: ArcadeCanvasProps) {

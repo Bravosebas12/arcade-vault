@@ -21,9 +21,9 @@ describe("filterGames", () => {
 
   it("filters by title ignoring case", () => {
     expect(ids(filterGames(GAMES, "fall", "TODOS"))).toEqual(["falling-blocks"]);
-    expect(ids(filterGames(GAMES, "ASTER", "TODOS"))).toEqual(["asteroids"]);
+    expect(ids(filterGames(GAMES, "METEOR", "TODOS"))).toEqual(["asteroids"]);
     expect(ids(filterGames(GAMES, "brick", "TODOS"))).toEqual(["brick-breaker"]);
-    expect(ids(filterGames(GAMES, "serp", "TODOS"))).toEqual(["snake"]);
+    expect(ids(filterGames(GAMES, "neon s", "TODOS"))).toEqual(["snake"]);
   });
 
   it("combines query and category", () => {

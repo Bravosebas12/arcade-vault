@@ -26,7 +26,7 @@ export const GAMES: readonly Game[] = [
   },
   {
     id: "asteroids",
-    title: "ASTEROIDES",
+    title: "METEOR STORM",
     short: "Pulveriza asteroides en gravedad cero.",
     long: "Tu nave triangular flota en vacío absoluto. Dispara y rota para dividir rocas en fragmentos cada vez más pequeños. Cuidado con los OVNIs en el horizonte.",
     cat: "SHOOTER",
@@ -36,9 +36,9 @@ export const GAMES: readonly Game[] = [
     plays: "15.6K",
   },
   {
-    // SPEC 09: prototype "SERPENTINA" entry; the long text now describes the fruits and maps.
+    // SPEC 09 (titled SERPENTINA until renamed to NEON SNAKE); the long text now describes the fruits and maps.
     id: "snake",
-    title: "SERPENTINA",
+    title: "NEON SNAKE",
     short: "Crece sin morder tu propia cola.",
     long: "Una serpiente de luz recorre cinco mapas buscando frutas de neón. Cada bocado la alarga y cada mapa la hace más veloz. Un movimiento en falso y se devora a sí misma.",
     cat: "ARCADE",
